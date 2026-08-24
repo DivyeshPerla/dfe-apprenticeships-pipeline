@@ -8,6 +8,9 @@ workflows/
 __pycache__/
 *.pyc
 *.csv
+# ...but dbt seeds ARE source, not data. Excluding them broke the build:
+# fct_apprenticeship_headline depends on the dataset_versions seed.
+!dbt/seeds/*.csv
 dbt/target/
 dbt/dbt_packages/
 dbt/logs/
