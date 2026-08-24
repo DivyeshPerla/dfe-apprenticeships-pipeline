@@ -18,7 +18,7 @@ import sys
 import tempfile
 
 from ingestion.dfe_client import APPRENTICESHIPS_DATASET_ID, DfEStatisticsClient
-from ingestion.gcs import upload_dir
+from ingestion.gcs import upload_partition
 
 log = logging.getLogger(__name__)
 
@@ -109,8 +109,8 @@ def main(argv: list[str] | None = None) -> int:
         manifest = extract_version(client, version, out_dir)
 
         if args.gcs_bucket:
-            uris = upload_dir(
-                out_dir, args.gcs_bucket, f"{args.gcs_prefix}/{partition}"
+            uris = upload_partition(
+                out_dir, args.gcs_bucket, args.gcs_prefix, partition
             )
             log.info(
                 "version=%s rows=%s -> %s objects in gs://%s",
