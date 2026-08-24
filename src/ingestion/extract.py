@@ -18,6 +18,7 @@ import sys
 import tempfile
 
 from ingestion.dfe_client import APPRENTICESHIPS_DATASET_ID, DfEStatisticsClient
+from ingestion.gcs import upload_dir
 
 log = logging.getLogger(__name__)
 
@@ -73,6 +74,15 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--list-versions", action="store_true")
     parser.add_argument("--out", default="data/bronze/apprenticeships")
+    parser.add_argument(
+        "--gcs-bucket",
+        help="upload the bronze partition to this bucket after extraction",
+    )
+    parser.add_argument(
+        "--gcs-prefix",
+        default="apprenticeships",
+        help="object prefix within the bucket (default: apprenticeships)",
+    )
     args = parser.parse_args(argv)
 
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(message)s")
@@ -94,8 +104,21 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     for version in versions:
+        partition = f"version={version}/ingest_date={today}"
         out_dir = os.path.join(args.out, f"version={version}", f"ingest_date={today}")
-        extract_version(client, version, out_dir)
+        manifest = extract_version(client, version, out_dir)
+
+        if args.gcs_bucket:
+            uris = upload_dir(
+                out_dir, args.gcs_bucket, f"{args.gcs_prefix}/{partition}"
+            )
+            log.info(
+                "version=%s rows=%s -> %s objects in gs://%s",
+                version,
+                manifest["row_count"],
+                len(uris),
+                args.gcs_bucket,
+            )
     return 0
 
 
