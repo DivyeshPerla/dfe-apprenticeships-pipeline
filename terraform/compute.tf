@@ -62,3 +62,10 @@ resource "google_pubsub_topic_iam_member" "ingestion_publisher" {
   role    = "roles/pubsub.publisher"
   member  = google_service_account.ingestion.member
 }
+
+# The workflow reads the watcher's decision object to decide whether to extract.
+resource "google_storage_bucket_iam_member" "orchestrator_state_reader" {
+  bucket = google_storage_bucket.bronze.name
+  role   = "roles/storage.objectViewer"
+  member = google_service_account.orchestrator.member
+}

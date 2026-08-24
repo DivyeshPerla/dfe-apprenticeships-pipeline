@@ -4,9 +4,10 @@
 # 5,000-step/month always-free allowance, and expresses the branch we actually
 # need -- "only do work when the source published something new".
 #
-# The watcher's exit code is the control signal:
-#   0 -> a new dataset version exists, run the full load
-#   3 -> nothing changed, finish early without touching BigQuery
+# The watcher always exits 0 and writes its decision to a GCS object. This is
+# deliberate: Cloud Run marks any non-zero exit as failed, so signalling "no
+# change" via an exit code would make a genuine crash indistinguishable from a
+# routine skip. Reading an explicit decision keeps failures loud.
 
 main:
   params: [input]
@@ -15,26 +16,30 @@ main:
         assign:
           - project: ${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
           - region: "europe-west2"
+          - bucket: "dfe-appr-bronze-dfe-apprenticeships-2026"
           - started_at: ${time.format(sys.now())}
 
+    # Any failure here propagates and fails the execution -- as it should.
     - check_for_new_version:
-        try:
-          call: googleapis.run.v1.namespaces.jobs.run
-          args:
-            name: ${"namespaces/" + project + "/jobs/dfe-appr-version-watcher"}
-            location: ${region}
-          result: watcher_result
-        except:
-          as: e
-          steps:
-            # Exit code 3 surfaces as a failed execution; that is the
-            # "no change" signal, not an error.
-            - classify:
-                switch:
-                  - condition: ${"failed" in text.to_lower(json.encode_to_string(e))}
-                    next: no_change
-            - genuine_failure:
-                raise: ${e}
+        call: googleapis.run.v1.namespaces.jobs.run
+        args:
+          name: ${"namespaces/" + project + "/jobs/dfe-appr-version-watcher"}
+          location: ${region}
+        result: watcher_result
+
+    - read_decision:
+        call: googleapis.storage.v1.objects.get
+        args:
+          bucket: ${bucket}
+          object: "_state%2Flast_decision.json"
+          alt: "media"
+        result: decision
+
+    - branch_on_decision:
+        switch:
+          - condition: ${decision.action == "extract"}
+            next: extract
+        next: no_change
 
     - extract:
         call: googleapis.run.v1.namespaces.jobs.run
@@ -43,20 +48,18 @@ main:
           location: ${region}
         result: extract_result
 
-    - refresh_external_table:
-        # The bronze external table reads straight from GCS, so a new partition
-        # is visible with no reload step. Nothing to do here by design.
-        assign:
-          - bronze_refreshed: true
-
+    # The bronze external table reads straight from GCS, so a new partition is
+    # queryable with no reload step. Nothing to do here by design.
     - done:
         return:
-          status: "completed"
+          status: "extracted"
+          version: ${decision.latest_version}
           started_at: ${started_at}
           finished_at: ${time.format(sys.now())}
 
     - no_change:
         return:
           status: "skipped_no_new_version"
+          version: ${decision.latest_version}
           started_at: ${started_at}
           finished_at: ${time.format(sys.now())}

@@ -6,9 +6,11 @@ cheap `/versions` endpoint, compares against the last version it saw (state
 kept as a small JSON object in GCS), and publishes to Pub/Sub only when the
 latest version actually changes.
 
-Exit codes let Cloud Workflows branch without parsing stdout:
-    0 -- new version detected (event published)
-    3 -- no change
+The job always exits 0 and records its decision in a small GCS object. An
+earlier design signalled "no change" with exit code 3, but Cloud Run marks any
+non-zero exit as a failed execution, so the orchestrator could not distinguish
+"nothing to do" from "the watcher crashed" -- a real failure would have been
+silently swallowed as a skip. The decision object makes the outcome explicit.
 """
 
 from __future__ import annotations
@@ -26,9 +28,10 @@ from ingestion.dfe_client import APPRENTICESHIPS_DATASET_ID, DfEStatisticsClient
 log = logging.getLogger(__name__)
 
 STATE_OBJECT = "_state/last_seen_version.json"
+DECISION_OBJECT = "_state/last_decision.json"
 
-EXIT_NEW_VERSION = 0
-EXIT_NO_CHANGE = 3
+ACTION_EXTRACT = "extract"
+ACTION_SKIP = "skip"
 
 
 def read_state(bucket_name: str, object_name: str = STATE_OBJECT) -> dict | None:
@@ -81,7 +84,17 @@ def main(argv: list[str] | None = None) -> int:
 
     if previous_version == latest:
         log.info("no change; nothing to do")
-        return EXIT_NO_CHANGE
+        write_state(
+            args.state_bucket,
+            {
+                "action": ACTION_SKIP,
+                "latest_version": latest,
+                "previous_version": previous_version,
+                "decided_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+            },
+            DECISION_OBJECT,
+        )
+        return 0
 
     payload = {
         "dataset_id": args.dataset_id,
@@ -94,10 +107,17 @@ def main(argv: list[str] | None = None) -> int:
         message_id = publish_event(args.project, args.topic, payload)
         log.info("published message %s to %s", message_id, args.topic)
 
-    # Only advance state after a successful publish, so a failure re-fires.
+    write_state(
+        args.state_bucket,
+        {**payload, "action": ACTION_EXTRACT,
+         "decided_at": dt.datetime.now(dt.timezone.utc).isoformat()},
+        DECISION_OBJECT,
+    )
+    # Only advance last-seen state after a successful publish, so a failure
+    # mid-run re-fires the same version rather than skipping it.
     write_state(args.state_bucket, payload)
     log.info("new version detected: %s -> %s", previous_version, latest)
-    return EXIT_NEW_VERSION
+    return 0
 
 
 if __name__ == "__main__":
