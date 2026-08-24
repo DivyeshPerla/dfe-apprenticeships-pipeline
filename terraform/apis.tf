@@ -11,6 +11,8 @@ locals {
     "cloudbuild.googleapis.com",
     "pubsub.googleapis.com",
     "cloudscheduler.googleapis.com",
+    "workflows.googleapis.com",
+    "workflowexecutions.googleapis.com",
     "secretmanager.googleapis.com",
     "aiplatform.googleapis.com",
     "dataplex.googleapis.com",

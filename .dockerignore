@@ -1,0 +1,10 @@
+.venv/
+.git/
+data/
+dbt/
+docs/
+terraform/
+notebooks/
+__pycache__/
+*.pyc
+*.csv

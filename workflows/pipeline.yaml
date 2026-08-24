@@ -1,0 +1,62 @@
+# Orchestrates the apprenticeships pipeline.
+#
+# Replaces Airflow for this project: Cloud Workflows is serverless, has a
+# 5,000-step/month always-free allowance, and expresses the branch we actually
+# need -- "only do work when the source published something new".
+#
+# The watcher's exit code is the control signal:
+#   0 -> a new dataset version exists, run the full load
+#   3 -> nothing changed, finish early without touching BigQuery
+
+main:
+  params: [input]
+  steps:
+    - init:
+        assign:
+          - project: ${sys.get_env("GOOGLE_CLOUD_PROJECT_ID")}
+          - region: "europe-west2"
+          - started_at: ${time.format(sys.now())}
+
+    - check_for_new_version:
+        try:
+          call: googleapis.run.v1.namespaces.jobs.run
+          args:
+            name: ${"namespaces/" + project + "/jobs/dfe-appr-version-watcher"}
+            location: ${region}
+          result: watcher_result
+        except:
+          as: e
+          steps:
+            # Exit code 3 surfaces as a failed execution; that is the
+            # "no change" signal, not an error.
+            - classify:
+                switch:
+                  - condition: ${"failed" in text.to_lower(json.encode_to_string(e))}
+                    next: no_change
+            - genuine_failure:
+                raise: ${e}
+
+    - extract:
+        call: googleapis.run.v1.namespaces.jobs.run
+        args:
+          name: ${"namespaces/" + project + "/jobs/dfe-appr-extract"}
+          location: ${region}
+        result: extract_result
+
+    - refresh_external_table:
+        # The bronze external table reads straight from GCS, so a new partition
+        # is visible with no reload step. Nothing to do here by design.
+        assign:
+          - bronze_refreshed: true
+
+    - done:
+        return:
+          status: "completed"
+          started_at: ${started_at}
+          finished_at: ${time.format(sys.now())}
+
+    - no_change:
+        return:
+          status: "skipped_no_new_version"
+          started_at: ${started_at}
+          finished_at: ${time.format(sys.now())}
