@@ -11,3 +11,6 @@ data/
 .DS_Store
 terraform.tfvars
 *.tfplan
+dbt/dbt_packages/
+dbt/target/
+dbt/logs/
