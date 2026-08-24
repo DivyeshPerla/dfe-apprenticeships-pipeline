@@ -1,10 +1,13 @@
 .venv/
 .git/
 data/
-dbt/
 docs/
 terraform/
 notebooks/
+workflows/
 __pycache__/
 *.pyc
 *.csv
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/

@@ -49,8 +49,16 @@ main:
           name: ${"projects/" + project + "/locations/" + region + "/jobs/dfe-appr-extract"}
         result: extract_result
 
-    # The bronze external table reads straight from GCS, so a new partition is
-    # queryable with no reload step. Nothing to do here by design.
+    # Bronze is an external table over GCS, so the new partition is queryable
+    # immediately. Silver and gold are materialised, so they must be rebuilt --
+    # this step is what makes the whole thing a pipeline rather than an
+    # extract job on a timer.
+    - transform:
+        call: googleapis.run.v2.projects.locations.jobs.run
+        args:
+          name: ${"projects/" + project + "/locations/" + region + "/jobs/dfe-appr-transform"}
+        result: transform_result
+
     - done:
         return:
           status: "extracted"

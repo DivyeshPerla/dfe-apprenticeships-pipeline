@@ -1,5 +1,6 @@
-# Slim base keeps the pushed image well inside Artifact Registry's 0.5 GB
-# always-free allowance.
+# Single image serving every pipeline job. Each Cloud Run Job overrides
+# `command`/`args`, so ingestion and dbt share one build and one registry
+# entry -- which also keeps Artifact Registry inside its 0.5 GB free tier.
 FROM python:3.12-slim
 
 ENV PYTHONUNBUFFERED=1 \
@@ -8,15 +9,19 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
-# Only the ingestion runtime deps -- dbt is not needed in this image.
-COPY requirements-ingest.txt .
-RUN pip install --no-cache-dir -r requirements-ingest.txt
+COPY requirements-ingest.txt requirements-dbt.txt ./
+RUN pip install --no-cache-dir -r requirements-ingest.txt -r requirements-dbt.txt
 
 COPY src/ ./src/
-ENV PYTHONPATH=/app/src
+COPY dbt/ ./dbt/
+
+ENV PYTHONPATH=/app/src \
+    DBT_PROFILES_DIR=/app/dbt
+
+# dbt writes target/ and logs/ at runtime; Cloud Run's filesystem is writable.
+WORKDIR /app/dbt
+RUN dbt deps --profiles-dir /app/dbt || true
+WORKDIR /app
 
 # Cloud Run Jobs run to completion; no server, no port.
-# One image serves both jobs -- the module is supplied as container args so
-# extract and version_watcher share a single build and a single registry entry.
-ENTRYPOINT ["python"]
-CMD ["-m", "ingestion.extract", "--help"]
+CMD ["python", "-m", "ingestion.extract", "--help"]

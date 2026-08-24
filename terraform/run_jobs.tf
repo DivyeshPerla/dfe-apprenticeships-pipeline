@@ -26,7 +26,8 @@ resource "google_cloud_run_v2_job" "extract" {
       max_retries = 1
 
       containers {
-        image = local.image
+        image   = local.image
+        command = ["python"]
         args = [
           "-m", "ingestion.extract",
           "--gcs-bucket", google_storage_bucket.bronze.name,
@@ -61,7 +62,8 @@ resource "google_cloud_run_v2_job" "version_watcher" {
       max_retries     = 1
 
       containers {
-        image = local.image
+        image   = local.image
+        command = ["python"]
         args = [
           "-m", "ingestion.version_watcher",
           "--state-bucket", google_storage_bucket.bronze.name,
@@ -114,6 +116,53 @@ resource "google_cloud_scheduler_job" "daily" {
 
     oauth_token {
       service_account_email = google_service_account.orchestrator.email
+    }
+  }
+
+  depends_on = [google_project_service.required]
+}
+
+# -- transform job ----------------------------------------------------------
+#
+# Runs the dbt build (models + tests) inside GCP. Without this the pipeline
+# would land new data in bronze and leave silver/gold stale until someone ran
+# dbt by hand -- i.e. not a pipeline at all.
+#
+# Uses the transform identity, which can read bronze and own silver/gold but
+# cannot write to the raw landing zone.
+
+resource "google_cloud_run_v2_job" "transform" {
+  name     = "${var.resource_prefix}-transform"
+  project  = var.project_id
+  location = var.region
+  labels   = var.labels
+
+  deletion_protection = false
+
+  template {
+    template {
+      service_account = google_service_account.transform.email
+      timeout         = "1800s"
+      max_retries     = 0
+
+      containers {
+        image   = local.image
+        command = ["dbt"]
+        # `build` runs models and their tests together, stopping on failure,
+        # so a broken transform never publishes to gold.
+        args = [
+          "build",
+          "--project-dir", "/app/dbt",
+          "--profiles-dir", "/app/dbt",
+          "--target", "dev",
+        ]
+        resources {
+          limits = {
+            cpu    = "1"
+            memory = "2Gi"
+          }
+        }
+      }
     }
   }
 
