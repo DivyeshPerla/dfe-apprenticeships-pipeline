@@ -20,11 +20,13 @@ main:
           - started_at: ${time.format(sys.now())}
 
     # Any failure here propagates and fails the execution -- as it should.
+    # v2 connector, not v1. The legacy Knative-style v1 `namespaces` API
+    # resolves executions under a project-number namespace that the polling
+    # call cannot read, producing a 403 even though the job itself succeeds.
     - check_for_new_version:
-        call: googleapis.run.v1.namespaces.jobs.run
+        call: googleapis.run.v2.projects.locations.jobs.run
         args:
-          name: ${"namespaces/" + project + "/jobs/dfe-appr-version-watcher"}
-          location: ${region}
+          name: ${"projects/" + project + "/locations/" + region + "/jobs/dfe-appr-version-watcher"}
         result: watcher_result
 
     - read_decision:
@@ -42,10 +44,9 @@ main:
         next: no_change
 
     - extract:
-        call: googleapis.run.v1.namespaces.jobs.run
+        call: googleapis.run.v2.projects.locations.jobs.run
         args:
-          name: ${"namespaces/" + project + "/jobs/dfe-appr-extract"}
-          location: ${region}
+          name: ${"projects/" + project + "/locations/" + region + "/jobs/dfe-appr-extract"}
         result: extract_result
 
     # The bronze external table reads straight from GCS, so a new partition is

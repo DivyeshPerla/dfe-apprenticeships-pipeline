@@ -69,3 +69,11 @@ resource "google_storage_bucket_iam_member" "orchestrator_state_reader" {
   role   = "roles/storage.objectViewer"
   member = google_service_account.orchestrator.member
 }
+
+# Starting a job needs run.invoker; *waiting* for it needs read access to the
+# execution resource as well, otherwise the workflow 403s while polling.
+resource "google_project_iam_member" "orchestrator_run_viewer" {
+  project = var.project_id
+  role    = "roles/run.viewer"
+  member  = google_service_account.orchestrator.member
+}
