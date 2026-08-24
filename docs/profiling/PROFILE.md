@@ -45,8 +45,19 @@ Each of the 5 filter dimensions carries its own `Total` member.
 | 4 | 1,378 | subtotal |
 | 5 | 99 | grand total |
 
-Naive `SUM(start_count)` over the raw table overstates reality by roughly 5×.
-Mitigation: derive `aggregation_depth` (0–5) and expose `is_detail_grain`.
+**Measured in BigQuery** (v2.0.2, England, 2024/25):
+
+| method | total starts | rows used |
+|---|---|---|
+| naive `SUM(all rows)` | 8,484,310 | 576 |
+| detail grain only (`agg_depth = 0`) | **353,500** | 126 |
+| official published total (`agg_depth = 5`) | **353,500** | 1 |
+
+Naive aggregation overstates by **24x** -- not the ~5x first estimated.
+The detail-grain sum reconciles *exactly* to the published grand total, which
+is the proof that `agg_depth = 0` is the correct analytical grain.
+Mitigation: derive `aggregation_depth` (0-5) and expose `is_detail_grain`.
+Query: `sql/analysis/double_counting_proof.sql`.
 
 ## Finding 3 — six published versions with real, messy deltas
 | version | type | published | rows | vs prior: added / removed / restated |

@@ -18,8 +18,8 @@ This one hands you three real problems that senior reviewers will recognise:
    18–23% of counts are withheld. You must design a typed model that preserves
    *why* a value is missing — not `COALESCE(...,0)`.
 2. **80.4% of rows are pre-aggregated subtotals.** Every filter dimension has
-   its own `Total` member. Naive `SUM()` overstates by ~5×. Catching this is
-   the single most persuasive slide in the deck.
+   its own `Total` member. Naive `SUM()` overstates by **24x** (measured: 8,484,310 vs a true 353,500
+   for England 2024/25). Catching this is the single most persuasive slide.
 3. **Six published versions with rows added, removed *and* restated** — and a
    trap where ~4,200 "changes" per version are pure formatting (`'4'` → `'4.0'`).
    This gives a *real* incremental-load story with *real* deltas, not a
