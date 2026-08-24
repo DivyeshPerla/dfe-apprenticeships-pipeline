@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+data/
+*.csv
+!docs/profiling/*.md
+.terraform/
+*.tfstate
+*.tfstate.*
+.DS_Store
