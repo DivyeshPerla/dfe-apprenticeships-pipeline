@@ -1,0 +1,447 @@
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # google_bigquery_dataset.layers["bronze"] will be created
+  + resource "google_bigquery_dataset" "layers" {
+      + creation_time              = (known after apply)
+      + dataset_id                 = "bronze"
+      + default_collation          = (known after apply)
+      + delete_contents_on_destroy = false
+      + description                = "Raw as-loaded source data. No transformation. Replayable from GCS."
+      + effective_labels           = {
+          + "env"                        = "dev"
+          + "goog-terraform-provisioned" = "true"
+          + "managed"                    = "terraform"
+          + "project"                    = "dfe-apprenticeships"
+        }
+      + etag                       = (known after apply)
+      + friendly_name              = "Bronze layer"
+      + id                         = (known after apply)
+      + is_case_insensitive        = (known after apply)
+      + labels                     = {
+          + "env"     = "dev"
+          + "managed" = "terraform"
+          + "project" = "dfe-apprenticeships"
+        }
+      + last_modified_time         = (known after apply)
+      + location                   = "europe-west2"
+      + max_time_travel_hours      = (known after apply)
+      + project                    = "dfe-apprenticeships-2026"
+      + self_link                  = (known after apply)
+      + storage_billing_model      = (known after apply)
+      + terraform_labels           = {
+          + "env"                        = "dev"
+          + "goog-terraform-provisioned" = "true"
+          + "managed"                    = "terraform"
+          + "project"                    = "dfe-apprenticeships"
+        }
+    }
+
+  # google_bigquery_dataset.layers["gold"] will be created
+  + resource "google_bigquery_dataset" "layers" {
+      + creation_time              = (known after apply)
+      + dataset_id                 = "gold"
+      + default_collation          = (known after apply)
+      + delete_contents_on_destroy = false
+      + description                = "Dimensional model (star schema) and analytics marts."
+      + effective_labels           = {
+          + "env"                        = "dev"
+          + "goog-terraform-provisioned" = "true"
+          + "managed"                    = "terraform"
+          + "project"                    = "dfe-apprenticeships"
+        }
+      + etag                       = (known after apply)
+      + friendly_name              = "Gold layer"
+      + id                         = (known after apply)
+      + is_case_insensitive        = (known after apply)
+      + labels                     = {
+          + "env"     = "dev"
+          + "managed" = "terraform"
+          + "project" = "dfe-apprenticeships"
+        }
+      + last_modified_time         = (known after apply)
+      + location                   = "europe-west2"
+      + max_time_travel_hours      = (known after apply)
+      + project                    = "dfe-apprenticeships-2026"
+      + self_link                  = (known after apply)
+      + storage_billing_model      = (known after apply)
+      + terraform_labels           = {
+          + "env"                        = "dev"
+          + "goog-terraform-provisioned" = "true"
+          + "managed"                    = "terraform"
+          + "project"                    = "dfe-apprenticeships"
+        }
+    }
+
+  # google_bigquery_dataset.layers["silver"] will be created
+  + resource "google_bigquery_dataset" "layers" {
+      + creation_time              = (known after apply)
+      + dataset_id                 = "silver"
+      + default_collation          = (known after apply)
+      + delete_contents_on_destroy = false
+      + description                = "Typed and cleaned. Suppression codes split from values."
+      + effective_labels           = {
+          + "env"                        = "dev"
+          + "goog-terraform-provisioned" = "true"
+          + "managed"                    = "terraform"
+          + "project"                    = "dfe-apprenticeships"
+        }
+      + etag                       = (known after apply)
+      + friendly_name              = "Silver layer"
+      + id                         = (known after apply)
+      + is_case_insensitive        = (known after apply)
+      + labels                     = {
+          + "env"     = "dev"
+          + "managed" = "terraform"
+          + "project" = "dfe-apprenticeships"
+        }
+      + last_modified_time         = (known after apply)
+      + location                   = "europe-west2"
+      + max_time_travel_hours      = (known after apply)
+      + project                    = "dfe-apprenticeships-2026"
+      + self_link                  = (known after apply)
+      + storage_billing_model      = (known after apply)
+      + terraform_labels           = {
+          + "env"                        = "dev"
+          + "goog-terraform-provisioned" = "true"
+          + "managed"                    = "terraform"
+          + "project"                    = "dfe-apprenticeships"
+        }
+    }
+
+  # google_bigquery_dataset_iam_member.ingestion_bronze_editor will be created
+  + resource "google_bigquery_dataset_iam_member" "ingestion_bronze_editor" {
+      + dataset_id = "bronze"
+      + etag       = (known after apply)
+      + id         = (known after apply)
+      + member     = "serviceAccount:dfe-appr-ingestion@dfe-apprenticeships-2026.iam.gserviceaccount.com"
+      + project    = "dfe-apprenticeships-2026"
+      + role       = "roles/bigquery.dataEditor"
+    }
+
+  # google_bigquery_dataset_iam_member.transform_bronze_viewer will be created
+  + resource "google_bigquery_dataset_iam_member" "transform_bronze_viewer" {
+      + dataset_id = "bronze"
+      + etag       = (known after apply)
+      + id         = (known after apply)
+      + member     = "serviceAccount:dfe-appr-transform@dfe-apprenticeships-2026.iam.gserviceaccount.com"
+      + project    = "dfe-apprenticeships-2026"
+      + role       = "roles/bigquery.dataViewer"
+    }
+
+  # google_bigquery_dataset_iam_member.transform_editor["gold"] will be created
+  + resource "google_bigquery_dataset_iam_member" "transform_editor" {
+      + dataset_id = "gold"
+      + etag       = (known after apply)
+      + id         = (known after apply)
+      + member     = "serviceAccount:dfe-appr-transform@dfe-apprenticeships-2026.iam.gserviceaccount.com"
+      + project    = "dfe-apprenticeships-2026"
+      + role       = "roles/bigquery.dataEditor"
+    }
+
+  # google_bigquery_dataset_iam_member.transform_editor["silver"] will be created
+  + resource "google_bigquery_dataset_iam_member" "transform_editor" {
+      + dataset_id = "silver"
+      + etag       = (known after apply)
+      + id         = (known after apply)
+      + member     = "serviceAccount:dfe-appr-transform@dfe-apprenticeships-2026.iam.gserviceaccount.com"
+      + project    = "dfe-apprenticeships-2026"
+      + role       = "roles/bigquery.dataEditor"
+    }
+
+  # google_project_iam_member.ingestion_job_user will be created
+  + resource "google_project_iam_member" "ingestion_job_user" {
+      + etag    = (known after apply)
+      + id      = (known after apply)
+      + member  = "serviceAccount:dfe-appr-ingestion@dfe-apprenticeships-2026.iam.gserviceaccount.com"
+      + project = "dfe-apprenticeships-2026"
+      + role    = "roles/bigquery.jobUser"
+    }
+
+  # google_project_iam_member.transform_job_user will be created
+  + resource "google_project_iam_member" "transform_job_user" {
+      + etag    = (known after apply)
+      + id      = (known after apply)
+      + member  = "serviceAccount:dfe-appr-transform@dfe-apprenticeships-2026.iam.gserviceaccount.com"
+      + project = "dfe-apprenticeships-2026"
+      + role    = "roles/bigquery.jobUser"
+    }
+
+  # google_project_service.required["aiplatform.googleapis.com"] will be created
+  + resource "google_project_service" "required" {
+      + disable_on_destroy = false
+      + id                 = (known after apply)
+      + project            = "dfe-apprenticeships-2026"
+      + service            = "aiplatform.googleapis.com"
+    }
+
+  # google_project_service.required["artifactregistry.googleapis.com"] will be created
+  + resource "google_project_service" "required" {
+      + disable_on_destroy = false
+      + id                 = (known after apply)
+      + project            = "dfe-apprenticeships-2026"
+      + service            = "artifactregistry.googleapis.com"
+    }
+
+  # google_project_service.required["bigquery.googleapis.com"] will be created
+  + resource "google_project_service" "required" {
+      + disable_on_destroy = false
+      + id                 = (known after apply)
+      + project            = "dfe-apprenticeships-2026"
+      + service            = "bigquery.googleapis.com"
+    }
+
+  # google_project_service.required["bigqueryconnection.googleapis.com"] will be created
+  + resource "google_project_service" "required" {
+      + disable_on_destroy = false
+      + id                 = (known after apply)
+      + project            = "dfe-apprenticeships-2026"
+      + service            = "bigqueryconnection.googleapis.com"
+    }
+
+  # google_project_service.required["cloudbuild.googleapis.com"] will be created
+  + resource "google_project_service" "required" {
+      + disable_on_destroy = false
+      + id                 = (known after apply)
+      + project            = "dfe-apprenticeships-2026"
+      + service            = "cloudbuild.googleapis.com"
+    }
+
+  # google_project_service.required["cloudscheduler.googleapis.com"] will be created
+  + resource "google_project_service" "required" {
+      + disable_on_destroy = false
+      + id                 = (known after apply)
+      + project            = "dfe-apprenticeships-2026"
+      + service            = "cloudscheduler.googleapis.com"
+    }
+
+  # google_project_service.required["dataplex.googleapis.com"] will be created
+  + resource "google_project_service" "required" {
+      + disable_on_destroy = false
+      + id                 = (known after apply)
+      + project            = "dfe-apprenticeships-2026"
+      + service            = "dataplex.googleapis.com"
+    }
+
+  # google_project_service.required["logging.googleapis.com"] will be created
+  + resource "google_project_service" "required" {
+      + disable_on_destroy = false
+      + id                 = (known after apply)
+      + project            = "dfe-apprenticeships-2026"
+      + service            = "logging.googleapis.com"
+    }
+
+  # google_project_service.required["monitoring.googleapis.com"] will be created
+  + resource "google_project_service" "required" {
+      + disable_on_destroy = false
+      + id                 = (known after apply)
+      + project            = "dfe-apprenticeships-2026"
+      + service            = "monitoring.googleapis.com"
+    }
+
+  # google_project_service.required["pubsub.googleapis.com"] will be created
+  + resource "google_project_service" "required" {
+      + disable_on_destroy = false
+      + id                 = (known after apply)
+      + project            = "dfe-apprenticeships-2026"
+      + service            = "pubsub.googleapis.com"
+    }
+
+  # google_project_service.required["run.googleapis.com"] will be created
+  + resource "google_project_service" "required" {
+      + disable_on_destroy = false
+      + id                 = (known after apply)
+      + project            = "dfe-apprenticeships-2026"
+      + service            = "run.googleapis.com"
+    }
+
+  # google_project_service.required["secretmanager.googleapis.com"] will be created
+  + resource "google_project_service" "required" {
+      + disable_on_destroy = false
+      + id                 = (known after apply)
+      + project            = "dfe-apprenticeships-2026"
+      + service            = "secretmanager.googleapis.com"
+    }
+
+  # google_project_service.required["storage.googleapis.com"] will be created
+  + resource "google_project_service" "required" {
+      + disable_on_destroy = false
+      + id                 = (known after apply)
+      + project            = "dfe-apprenticeships-2026"
+      + service            = "storage.googleapis.com"
+    }
+
+  # google_service_account.ingestion will be created
+  + resource "google_service_account" "ingestion" {
+      + account_id   = "dfe-appr-ingestion"
+      + disabled     = false
+      + display_name = "DfE apprenticeships ingestion (Cloud Run Job)"
+      + email        = "dfe-appr-ingestion@dfe-apprenticeships-2026.iam.gserviceaccount.com"
+      + id           = (known after apply)
+      + member       = "serviceAccount:dfe-appr-ingestion@dfe-apprenticeships-2026.iam.gserviceaccount.com"
+      + name         = (known after apply)
+      + project      = "dfe-apprenticeships-2026"
+      + unique_id    = (known after apply)
+    }
+
+  # google_service_account.transform will be created
+  + resource "google_service_account" "transform" {
+      + account_id   = "dfe-appr-transform"
+      + disabled     = false
+      + display_name = "DfE apprenticeships transform (dbt)"
+      + email        = "dfe-appr-transform@dfe-apprenticeships-2026.iam.gserviceaccount.com"
+      + id           = (known after apply)
+      + member       = "serviceAccount:dfe-appr-transform@dfe-apprenticeships-2026.iam.gserviceaccount.com"
+      + name         = (known after apply)
+      + project      = "dfe-apprenticeships-2026"
+      + unique_id    = (known after apply)
+    }
+
+  # google_storage_bucket.artifacts will be created
+  + resource "google_storage_bucket" "artifacts" {
+      + effective_labels            = {
+          + "env"                        = "dev"
+          + "goog-terraform-provisioned" = "true"
+          + "managed"                    = "terraform"
+          + "project"                    = "dfe-apprenticeships"
+        }
+      + force_destroy               = false
+      + id                          = (known after apply)
+      + labels                      = {
+          + "env"     = "dev"
+          + "managed" = "terraform"
+          + "project" = "dfe-apprenticeships"
+        }
+      + location                    = "EUROPE-WEST2"
+      + name                        = "dfe-appr-artifacts-dfe-apprenticeships-2026"
+      + project                     = "dfe-apprenticeships-2026"
+      + project_number              = (known after apply)
+      + public_access_prevention    = "enforced"
+      + rpo                         = (known after apply)
+      + self_link                   = (known after apply)
+      + storage_class               = "STANDARD"
+      + terraform_labels            = {
+          + "env"                        = "dev"
+          + "goog-terraform-provisioned" = "true"
+          + "managed"                    = "terraform"
+          + "project"                    = "dfe-apprenticeships"
+        }
+      + time_created                = (known after apply)
+      + uniform_bucket_level_access = true
+      + updated                     = (known after apply)
+      + url                         = (known after apply)
+
+      + lifecycle_rule {
+          + action {
+              + type = "Delete"
+            }
+          + condition {
+              + age                   = 30
+              + matches_prefix        = []
+              + matches_storage_class = []
+              + matches_suffix        = []
+              + with_state            = (known after apply)
+            }
+        }
+    }
+
+  # google_storage_bucket.bronze will be created
+  + resource "google_storage_bucket" "bronze" {
+      + effective_labels            = {
+          + "env"                        = "dev"
+          + "goog-terraform-provisioned" = "true"
+          + "managed"                    = "terraform"
+          + "project"                    = "dfe-apprenticeships"
+        }
+      + force_destroy               = false
+      + id                          = (known after apply)
+      + labels                      = {
+          + "env"     = "dev"
+          + "managed" = "terraform"
+          + "project" = "dfe-apprenticeships"
+        }
+      + location                    = "EUROPE-WEST2"
+      + name                        = "dfe-appr-bronze-dfe-apprenticeships-2026"
+      + project                     = "dfe-apprenticeships-2026"
+      + project_number              = (known after apply)
+      + public_access_prevention    = "enforced"
+      + rpo                         = (known after apply)
+      + self_link                   = (known after apply)
+      + storage_class               = "STANDARD"
+      + terraform_labels            = {
+          + "env"                        = "dev"
+          + "goog-terraform-provisioned" = "true"
+          + "managed"                    = "terraform"
+          + "project"                    = "dfe-apprenticeships"
+        }
+      + time_created                = (known after apply)
+      + uniform_bucket_level_access = true
+      + updated                     = (known after apply)
+      + url                         = (known after apply)
+
+      + lifecycle_rule {
+          + action {
+              + type = "Delete"
+            }
+          + condition {
+              + matches_prefix        = []
+              + matches_storage_class = []
+              + matches_suffix        = []
+              + num_newer_versions    = 3
+              + with_state            = (known after apply)
+            }
+        }
+      + lifecycle_rule {
+          + action {
+              + storage_class = "NEARLINE"
+              + type          = "SetStorageClass"
+            }
+          + condition {
+              + age                   = 90
+              + matches_prefix        = []
+              + matches_storage_class = []
+              + matches_suffix        = []
+              + with_state            = (known after apply)
+            }
+        }
+
+      + versioning {
+          + enabled = true
+        }
+    }
+
+  # google_storage_bucket_iam_member.ingestion_bronze_writer will be created
+  + resource "google_storage_bucket_iam_member" "ingestion_bronze_writer" {
+      + bucket = "dfe-appr-bronze-dfe-apprenticeships-2026"
+      + etag   = (known after apply)
+      + id     = (known after apply)
+      + member = "serviceAccount:dfe-appr-ingestion@dfe-apprenticeships-2026.iam.gserviceaccount.com"
+      + role   = "roles/storage.objectAdmin"
+    }
+
+  # google_storage_bucket_iam_member.transform_bronze_reader will be created
+  + resource "google_storage_bucket_iam_member" "transform_bronze_reader" {
+      + bucket = "dfe-appr-bronze-dfe-apprenticeships-2026"
+      + etag   = (known after apply)
+      + id     = (known after apply)
+      + member = "serviceAccount:dfe-appr-transform@dfe-apprenticeships-2026.iam.gserviceaccount.com"
+      + role   = "roles/storage.objectViewer"
+    }
+
+Plan: 28 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + artifacts_bucket          = "dfe-appr-artifacts-dfe-apprenticeships-2026"
+  + bigquery_datasets         = {
+      + bronze = "bronze"
+      + gold   = "gold"
+      + silver = "silver"
+    }
+  + bronze_bucket             = "dfe-appr-bronze-dfe-apprenticeships-2026"
+  + bronze_uri                = "gs://dfe-appr-bronze-dfe-apprenticeships-2026/apprenticeships"
+  + ingestion_service_account = "dfe-appr-ingestion@dfe-apprenticeships-2026.iam.gserviceaccount.com"
+  + transform_service_account = "dfe-appr-transform@dfe-apprenticeships-2026.iam.gserviceaccount.com"
