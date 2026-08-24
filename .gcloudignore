@@ -1,0 +1,17 @@
+# Controls what `gcloud builds submit` uploads as the build context.
+#
+# WITHOUT this file gcloud falls back to .gitignore, whose `*.csv` rule
+# silently excluded dbt/seeds/dataset_versions.csv from every build -- the
+# containerised dbt build then failed to resolve the seed. Keep this explicit.
+.git/
+.venv/
+data/
+docs/
+notebooks/
+terraform/
+__pycache__/
+*.pyc
+/*.csv
+dbt/target/
+dbt/dbt_packages/
+dbt/logs/

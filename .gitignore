@@ -5,6 +5,8 @@ __pycache__/
 data/
 *.csv
 !docs/profiling/*.md
+# dbt seeds are source code, not data -- they must be version controlled.
+!dbt/seeds/*.csv
 .terraform/
 *.tfstate
 *.tfstate.*
