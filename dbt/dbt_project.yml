@@ -1,0 +1,37 @@
+name: dfe_apprenticeships
+version: "1.0.0"
+config-version: 2
+
+profile: dfe_apprenticeships
+
+model-paths: ["models"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+seed-paths: ["seeds"]
+
+target-path: "target"
+clean-targets: ["target", "dbt_packages"]
+
+vars:
+  # The dataset version treated as "current" for point-in-time models.
+  current_version: "2.0.2"
+
+models:
+  dfe_apprenticeships:
+    staging:
+      +materialized: view
+      +schema: silver
+    marts:
+      +materialized: table
+      +schema: gold
+
+seeds:
+  dfe_apprenticeships:
+    +schema: silver
+    dataset_versions:
+      +column_types:
+        version: string
+        version_type: string
+        published_at: date
+        total_results: int64
+        version_seq: int64

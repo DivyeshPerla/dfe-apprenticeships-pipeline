@@ -1,0 +1,19 @@
+version: 2
+
+models:
+  - name: fct_apprenticeship_headline
+    description: >
+      Type 2 slowly-changing fact across published dataset versions. Answers
+      "what did DfE report as of version X?" not merely "what do they say now".
+      Comparison is on typed values, so cosmetic reformatting does not open a
+      new record.
+    columns:
+      - name: row_key
+        tests: [not_null]
+      - name: valid_from_seq
+        tests: [not_null]
+      - name: is_current
+        tests: [not_null]
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [row_key, valid_from_seq]

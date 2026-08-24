@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: stg_apprenticeships
+    description: >
+      Typed, suppression-aware silver layer. One row per natural key per
+      published dataset version. Measures are split into a typed value and a
+      status explaining any NULL.
+    columns:
+      - name: row_key
+        description: MD5 over the 8-part natural key. Stable across versions.
+        tests: [not_null]
+      - name: dataset_version
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dataset_versions')
+              field: version
+      - name: academic_year_start
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 2017
+              max_value: 2030
+      - name: aggregation_depth
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5]
+              quote: false
+      - name: start_count_status
+        tests:
+          - accepted_values:
+              values: ['published','suppressed_low','suppressed_confidential','not_applicable','missing']
+      - name: participation_count_status
+        tests:
+          - accepted_values:
+              values: ['published','suppressed_low','suppressed_confidential','not_applicable','missing']
+      - name: achievements_percent_status
+        tests:
+          - accepted_values:
+              values: ['published','suppressed_low','suppressed_confidential','not_applicable','missing']
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [row_key, dataset_version]

@@ -1,0 +1,12 @@
+dfe_apprenticeships:
+  target: dev
+  outputs:
+    dev:
+      type: bigquery
+      method: oauth          # uses gcloud Application Default Credentials
+      project: dfe-apprenticeships-2026
+      dataset: silver        # default; per-model +schema overrides this
+      location: europe-west2
+      threads: 4
+      priority: interactive
+      job_retries: 1

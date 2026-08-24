@@ -54,8 +54,11 @@ Each of the 5 filter dimensions carries its own `Total` member.
 | official published total (`agg_depth = 5`) | **353,500** | 1 |
 
 Naive aggregation overstates by **24x** -- not the ~5x first estimated.
-The detail-grain sum reconciles *exactly* to the published grand total, which
-is the proof that `agg_depth = 0` is the correct analytical grain.
+The detail-grain sum lands on the published grand total, confirming
+`agg_depth = 0` as the correct analytical grain.
+
+**Caveat (measured later):** 2024/25 matches to the digit, but that is luck --
+only 2 of 9 years do. See Finding 5.
 Mitigation: derive `aggregation_depth` (0-5) and expose `is_detail_grain`.
 Query: `sql/analysis/double_counting_proof.sql`.
 
@@ -100,3 +103,31 @@ i.e. a figure moved from suppressed to published between releases.
 - `POST /data-sets/{id}/query` → paged JSON; **`page`/`pageSize` go in the
   BODY**, not the query string (400 otherwise)
 - No API key required.
+
+## Finding 5 -- every published figure is rounded to the nearest 10
+
+Verified: **42,045 of 42,045** non-suppressed `start_count` values are exact
+multiples of 10, minimum value 10. Rounding is part of the disclosure control
+regime, alongside the suppression markers.
+
+Consequence: **exact reconciliation between a sum of detail rows and a
+published total is mathematically impossible.** Summing ~122 independently
+rounded values cannot equal an independently rounded grand total.
+
+| academic year | detail sum | published | diff |
+|---|---|---|---|
+| 2017/18 | 375,780 | 375,760 | +20 |
+| 2018/19 | 393,390 | 393,380 | +10 |
+| 2019/20 | 322,610 | 322,530 | +80 |
+| 2020/21 | 321,490 | 321,440 | +50 |
+| 2021/22 | 349,280 | 349,190 | +90 |
+| 2022/23 | 337,150 | 337,140 | +10 |
+| 2023/24 | 339,650 | 339,580 | +70 |
+| 2024/25 | 353,500 | 353,500 | 0 |
+| 2025/26 | 308,770 | 308,770 | 0 |
+
+Max relative error 0.026%. Expected rounding error is ~5*sqrt(n) ~ 55 for
+n=122, so this is entirely consistent with rounding noise and not a modelling
+defect. The data quality test asserts a **0.1% tolerance** rather than
+equality -- loose enough to absorb rounding, tight enough that a real
+aggregation bug (~24x) fails loudly.

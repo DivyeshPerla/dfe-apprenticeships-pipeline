@@ -11,10 +11,17 @@
 -- Result (version 2.0.2, England, 2024/25):
 --   NAIVE   SUM(all rows)       8,484,310   576 rows
 --   CORRECT detail grain only     353,500   126 rows
---   OFFICIAL published total      353,500     1 row   <- exact reconciliation
+--   OFFICIAL published total      353,500     1 row
 --
--- The detail-grain sum matching the published grand total is the proof that
+-- The detail-grain sum landing on the published grand total is the proof that
 -- agg_depth = 0 is the correct analytical grain.
+--
+-- CAVEAT: 2024/25 happens to match to the digit; most years do not. Every
+-- published figure is rounded to the nearest 10 (disclosure control), so
+-- summing ~122 rounded detail values cannot exactly equal an independently
+-- rounded total. Differences across the nine years run 0-90 (<0.03%). The
+-- shipped test therefore asserts a 0.1% tolerance, not equality --
+-- see dbt/tests/assert_detail_grain_reconciles_to_published_total.sql.
 
 WITH latest AS (
   SELECT *

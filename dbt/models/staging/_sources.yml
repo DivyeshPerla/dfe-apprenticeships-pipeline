@@ -1,0 +1,18 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: dfe-apprenticeships-2026
+    schema: bronze
+    description: >
+      Raw as-loaded DfE extracts. External table over the GCS landing zone;
+      every column is STRING by design so suppression markers survive the load.
+      `version` and `ingest_date` are hive partition columns derived from the
+      object path, not from the file contents.
+    tables:
+      - name: raw_apprenticeships
+        columns:
+          - name: version
+            description: Dataset version, e.g. "2.0.2". Hive partition column.
+          - name: ingest_date
+            description: Date the partition was extracted. Hive partition column.
