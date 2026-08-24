@@ -1,0 +1,372 @@
+<title>DfE Apprenticeships — Pipeline Dashboard</title>
+<style>
+  .viz-root {
+    color-scheme: light;
+    --surface-0: #f4f4f2;
+    --surface-1: #fcfcfb;
+    --border:    #dcdcd6;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #82817b;
+    --series-1: #2a78d6;
+    --series-2: #eb6834;
+    --series-3: #1baf7a;
+    --series-4: #eda100;
+    --grid: #e6e6e0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) .viz-root {
+      color-scheme: dark;
+      --surface-0: #121211;
+      --surface-1: #1a1a19;
+      --border:    #33332f;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #8f8e85;
+      --series-1: #3987e5;
+      --series-2: #d95926;
+      --series-3: #199e70;
+      --series-4: #c98500;
+      --grid: #2b2b28;
+    }
+  }
+  :root[data-theme="dark"] .viz-root {
+    color-scheme: dark;
+    --surface-0: #121211;
+    --surface-1: #1a1a19;
+    --border:    #33332f;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #8f8e85;
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --grid: #2b2b28;
+  }
+
+  .viz-root {
+    background: var(--surface-0);
+    color: var(--text-primary);
+    font: 15px/1.55 ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+    padding: 32px 24px 64px;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; }
+  header.page { margin-bottom: 28px; }
+  header.page h1 { font-size: 28px; font-weight: 640; margin: 0 0 6px; letter-spacing: -0.02em; }
+  header.page p { margin: 0; color: var(--text-secondary); max-width: 70ch; }
+  .src { font-size: 13px; color: var(--text-muted); margin-top: 8px; }
+
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 26px 0 34px; }
+  .tile { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 16px 18px; }
+  .tile .v { font-size: 30px; font-weight: 660; letter-spacing: -0.025em; font-variant-numeric: tabular-nums; }
+  .tile .k { font-size: 12.5px; color: var(--text-secondary); margin-top: 3px; }
+  .tile .n { font-size: 11.5px; color: var(--text-muted); margin-top: 7px; line-height: 1.45; }
+
+  .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 12px; padding: 20px 22px 16px; margin-bottom: 20px; }
+  .card h2 { font-size: 16px; font-weight: 620; margin: 0 0 3px; letter-spacing: -0.01em; }
+  .card .sub { font-size: 13px; color: var(--text-secondary); margin: 0 0 16px; max-width: 78ch; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  @media (max-width: 860px) { .grid2 { grid-template-columns: 1fr; } }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 12px; font-size: 12.5px; color: var(--text-secondary); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 11px; height: 11px; border-radius: 3px; display: inline-block; }
+
+  .chart-scroll { overflow-x: auto; }
+  svg { display: block; max-width: 100%; height: auto; }
+  .gridline { stroke: var(--grid); stroke-width: 1; }
+  .axis-txt { fill: var(--text-muted); font-size: 11.5px; }
+  .lbl { fill: var(--text-secondary); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+  .lbl-strong { fill: var(--text-primary); font-size: 11.5px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .tip { position: fixed; pointer-events: none; opacity: 0; transition: opacity .1s;
+         background: var(--surface-1); border: 1px solid var(--border); border-radius: 8px;
+         padding: 8px 11px; font-size: 12.5px; color: var(--text-primary);
+         box-shadow: 0 6px 22px rgba(0,0,0,.16); z-index: 50; white-space: nowrap; }
+  .tip b { font-weight: 620; }
+  .tip .row { display: flex; align-items: center; gap: 7px; margin-top: 3px; color: var(--text-secondary); }
+  .tip .row i { width: 9px; height: 9px; border-radius: 2px; display: inline-block; }
+
+  details.tbl { margin-top: 10px; }
+  details.tbl summary { cursor: pointer; font-size: 12.5px; color: var(--text-secondary); }
+  table { border-collapse: collapse; width: 100%; margin-top: 10px; font-size: 12.5px; }
+  th, td { text-align: right; padding: 5px 9px; border-bottom: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--text-secondary); font-weight: 580; }
+
+  .note { font-size: 12.5px; color: var(--text-muted); margin-top: 12px; line-height: 1.5; }
+  .flag { display:inline-block; padding:1px 7px; border-radius:5px; background:var(--surface-0);
+          border:1px solid var(--border); font-size:11px; color:var(--text-secondary); }
+</style>
+<div class="viz-root">
+<div class="wrap">
+
+<header class="page">
+  <h1>Apprenticeship statistics &mdash; England</h1>
+  <p>Built from the DfE Explore Education Statistics API through a serverless pipeline on GCP:
+     API &rarr; Cloud Storage &rarr; BigQuery, orchestrated by Cloud Workflows and transformed with dbt.</p>
+  <p class="src">Source: <em>Headline Full year &mdash; Starts, Achievements, Participation by Level, Levy, Age,
+     Region, Provider type</em>, dataset version 2.0.2 (published 2026&#8209;07&#8209;16).
+     All figures rounded to the nearest 10 by the publisher.</p>
+</header>
+
+<div class="tiles">
+  <div class="tile">
+    <div class="v" id="t-starts">&mdash;</div>
+    <div class="k">Starts, 2024/25</div>
+    <div class="n">England, summed at detail grain</div>
+  </div>
+  <div class="tile">
+    <div class="v">24&times;</div>
+    <div class="k">Naive aggregation error</div>
+    <div class="n">Summing every row returns 8,484,310 against a true 353,500 &mdash; 80% of source rows are subtotals</div>
+  </div>
+  <div class="tile">
+    <div class="v">4,208</div>
+    <div class="k">Phantom revisions avoided</div>
+    <div class="n">Reformatting alone ('4'&rarr;'4.0') would have opened that many spurious history records</div>
+  </div>
+  <div class="tile">
+    <div class="v">392</div>
+    <div class="k">Disclosure status changes</div>
+    <div class="n">Figures that moved between withheld and published across the six releases</div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Starts and achievements over time</h2>
+  <p class="sub">England, detail grain only. 2025/26 covers the first three quarters and is provisional &mdash; shown dashed, and not comparable with the full years beside it.</p>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--series-1)"></i>Starts</span>
+    <span><i class="sw" style="background:var(--series-2)"></i>Achievements</span>
+    <span class="flag">dashed = provisional</span>
+  </div>
+  <div class="chart-scroll"><svg id="c-trend" viewBox="0 0 880 300" role="img" aria-label="Line chart of apprenticeship starts and achievements by academic year"></svg></div>
+  <details class="tbl"><summary>Table view</summary><div id="tb-trend"></div></details>
+</div>
+
+<div class="grid2">
+  <div class="card">
+    <h2>Apprenticeship level mix by region</h2>
+    <p class="sub">Share of starts by level, full years only. London is the outlier &mdash; the highest share of higher apprenticeships and the lowest of intermediate.</p>
+    <div class="legend">
+      <span><i class="sw" style="background:var(--series-1)"></i>Intermediate</span>
+      <span><i class="sw" style="background:var(--series-2)"></i>Advanced</span>
+      <span><i class="sw" style="background:var(--series-3)"></i>Higher</span>
+    </div>
+    <div class="chart-scroll"><svg id="c-mix" viewBox="0 0 440 330" role="img" aria-label="Stacked bar chart of apprenticeship level share by region"></svg></div>
+    <details class="tbl"><summary>Table view</summary><div id="tb-mix"></div></details>
+  </div>
+
+  <div class="card">
+    <h2>Suppression rate by region</h2>
+    <p class="sub">Share of underlying cells withheld for statistical disclosure control. A high rate means the regional total is materially incomplete, not that activity is low.</p>
+    <div class="legend"><span><i class="sw" style="background:var(--series-4)"></i>Cells withheld</span></div>
+    <div class="chart-scroll"><svg id="c-sup" viewBox="0 0 440 330" role="img" aria-label="Bar chart of suppression rate by region"></svg></div>
+    <details class="tbl"><summary>Table view</summary><div id="tb-sup"></div></details>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Revisions between published versions</h2>
+  <p class="sub">The publisher restates history. Because every version is retained in the bronze layer and the fact table is type&#8209;2, the warehouse can answer what changed, when, and by how much &mdash; a question a current&#8209;state&#8209;only model cannot.</p>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--series-1)"></i>Figures revised</span>
+    <span><i class="sw" style="background:var(--series-4)"></i>of which disclosure status changed</span>
+  </div>
+  <div class="chart-scroll"><svg id="c-rest" viewBox="0 0 880 250" role="img" aria-label="Grouped bar chart of revisions between dataset versions"></svg></div>
+  <p class="note">Comparison is on typed values, not raw strings. Between 1.0.2 and 2.0 the publisher reformatted roughly 4,200 percentages without changing their meaning; a string&#8209;level diff would have recorded every one as a revision.</p>
+  <details class="tbl"><summary>Table view</summary><div id="tb-rest"></div></details>
+</div>
+
+<p class="note">
+  Pipeline: 43 Terraform&#8209;managed resources &middot; 3 Cloud Run jobs &middot; Cloud Workflows on a daily schedule &middot;
+  7 dbt models with 20 passing tests &middot; bronze/silver/gold in BigQuery.
+  Suppressed measures are held as NULL with the reason recorded alongside, never zero&#8209;filled.
+</p>
+
+</div>
+<div class="tip" id="tip"></div>
+</div>
+<script>
+const DATA = {"national":[{"year":"2017/18","starts":375780,"achievements":276180,"provisional":false},{"year":"2018/19","starts":393390,"achievements":185190,"provisional":false},{"year":"2019/20","starts":322610,"achievements":147010,"provisional":false},{"year":"2020/21","starts":321490,"achievements":156500,"provisional":false},{"year":"2021/22","starts":349280,"achievements":137270,"provisional":false},{"year":"2022/23","starts":337150,"achievements":162360,"provisional":false},{"year":"2023/24","starts":339650,"achievements":178310,"provisional":false},{"year":"2024/25","starts":353500,"achievements":198330,"provisional":false},{"year":"2025/26","starts":308770,"achievements":146240,"provisional":true}],"mixshares":[{"region":"London","total":300600,"Intermediate":20.9,"Advanced":41.8,"Higher":37.3,"Unknown":0.0},{"region":"East of England","total":279400,"Intermediate":25.5,"Advanced":43.2,"Higher":31.3,"Unknown":0.0},{"region":"South East","total":418430,"Intermediate":26.2,"Advanced":44.5,"Higher":29.3,"Unknown":0.0},{"region":"West Midlands","total":314590,"Intermediate":27.7,"Advanced":44.8,"Higher":27.5,"Unknown":0.0},{"region":"North West","total":408320,"Intermediate":28.4,"Advanced":44.3,"Higher":27.3,"Unknown":0.0},{"region":"East Midlands","total":249280,"Intermediate":28.9,"Advanced":44.4,"Higher":26.7,"Unknown":0.0},{"region":"South West","total":316400,"Intermediate":32.4,"Advanced":43.0,"Higher":24.6,"Unknown":0.0},{"region":"North East","total":156780,"Intermediate":31.0,"Advanced":44.9,"Higher":24.1,"Unknown":0.0},{"region":"Yorkshire and The Humber","total":320640,"Intermediate":36.4,"Advanced":40.4,"Higher":23.2,"Unknown":0.0}],"suppression":[{"region":"London","rate":28.5,"suppressed":253,"total":887},{"region":"North West","rate":24.7,"suppressed":201,"total":815},{"region":"West Midlands","rate":24.5,"suppressed":245,"total":999},{"region":"East Midlands","rate":24.2,"suppressed":222,"total":918},{"region":"East of England","rate":21.8,"suppressed":197,"total":905},{"region":"South West","rate":20.4,"suppressed":196,"total":963},{"region":"North East","rate":19.0,"suppressed":152,"total":798},{"region":"South East","rate":18.5,"suppressed":175,"total":946},{"region":"Yorkshire and The Humber","rate":17.0,"suppressed":148,"total":871}],"restate":[{"revision":"1.0 to 1.0.2","revised":2996,"disclosure":30},{"revision":"2.0 to 2.0.1","revised":4191,"disclosure":203},{"revision":"2.0 to 2.0.2","revised":410,"disclosure":122},{"revision":"2.0.1 to 2.0.2","revised":3900,"disclosure":37}]};</script>
+<script>
+(function () {
+  const S = n => n.toLocaleString('en-GB');
+  const NS = 'http://www.w3.org/2000/svg';
+  const el = (t, a) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const css = v => getComputedStyle(document.querySelector('.viz-root')).getPropertyValue(v).trim();
+  const tip = document.getElementById('tip');
+
+  function showTip(evt, html) {
+    tip.innerHTML = html; tip.style.opacity = 1;
+    const r = tip.getBoundingClientRect();
+    let x = evt.clientX + 14, y = evt.clientY - r.height - 10;
+    if (x + r.width > innerWidth - 8) x = evt.clientX - r.width - 14;
+    if (y < 8) y = evt.clientY + 16;
+    tip.style.left = x + 'px'; tip.style.top = y + 'px';
+  }
+  const hideTip = () => { tip.style.opacity = 0; };
+
+  function table(host, cols, rows) {
+    const t = document.createElement('table');
+    t.innerHTML = '<thead><tr>' + cols.map(c => `<th>${c}</th>`).join('') + '</tr></thead><tbody>'
+      + rows.map(r => '<tr>' + r.map(v => `<td>${v}</td>`).join('') + '</tr>').join('') + '</tbody>';
+    host.appendChild(t);
+  }
+
+  /* ---------- 1. trend ---------- */
+  (function () {
+    const svg = document.getElementById('c-trend'), D = DATA.national;
+    const W = 880, H = 300, m = { t: 18, r: 118, b: 34, l: 58 };
+    const iw = W - m.l - m.r, ih = H - m.t - m.b;
+    const max = Math.max(...D.map(d => Math.max(d.starts, d.achievements))) * 1.08;
+    const x = i => m.l + (iw * i) / (D.length - 1);
+    const y = v => m.t + ih - (v / max) * ih;
+
+    for (let g = 0; g <= 4; g++) {
+      const v = (max / 4) * g;
+      svg.appendChild(el('line', { x1: m.l, x2: m.l + iw, y1: y(v), y2: y(v), class: 'gridline' }));
+      const tx = el('text', { x: m.l - 9, y: y(v) + 4, class: 'axis-txt', 'text-anchor': 'end' });
+      tx.textContent = Math.round(v / 1000) + 'k'; svg.appendChild(tx);
+    }
+    D.forEach((d, i) => {
+      const tx = el('text', { x: x(i), y: H - 11, class: 'axis-txt', 'text-anchor': 'middle' });
+      tx.textContent = d.year; svg.appendChild(tx);
+    });
+
+    [['starts', '--series-1', 'Starts'], ['achievements', '--series-2', 'Achievements']].forEach(([key, cv, name]) => {
+      const c = css(cv);
+      // split solid (final) vs dashed (provisional) so the part-year is never read as comparable
+      const solid = D.map((d, i) => [i, d]).filter(([i, d]) => !d.provisional);
+      const path = p => p.map(([i, d], k) => (k ? 'L' : 'M') + x(i) + ' ' + y(d[key])).join(' ');
+      svg.appendChild(el('path', { d: path(solid), fill: 'none', stroke: c, 'stroke-width': 2, 'stroke-linejoin': 'round' }));
+      const lastSolid = solid[solid.length - 1];
+      const prov = D.map((d, i) => [i, d]).filter(([i, d]) => d.provisional);
+      if (prov.length) {
+        svg.appendChild(el('path', { d: path([lastSolid, ...prov]), fill: 'none', stroke: c, 'stroke-width': 2, 'stroke-dasharray': '5 4' }));
+      }
+      D.forEach((d, i) => {
+        svg.appendChild(el('circle', { cx: x(i), cy: y(d[key]), r: 4.5, fill: c, stroke: css('--surface-1'), 'stroke-width': 2 }));
+      });
+      const last = D[D.length - 1];
+      const lb = el('text', { x: x(D.length - 1) + 12, y: y(last[key]) + 4, class: 'lbl-strong', fill: css('--text-primary') });
+      lb.textContent = name + '  ' + S(last[key]); svg.appendChild(lb);
+    });
+
+    D.forEach((d, i) => {
+      const hit = el('rect', { x: x(i) - iw / (D.length * 2), y: m.t, width: iw / D.length, height: ih, fill: 'transparent' });
+      hit.addEventListener('mousemove', e => showTip(e,
+        `<b>${d.year}</b>${d.provisional ? ' <span style="opacity:.7">(provisional)</span>' : ''}
+         <div class="row"><i style="background:${css('--series-1')}"></i>Starts ${S(d.starts)}</div>
+         <div class="row"><i style="background:${css('--series-2')}"></i>Achievements ${S(d.achievements)}</div>`));
+      hit.addEventListener('mouseleave', hideTip);
+      svg.appendChild(hit);
+    });
+
+    table(document.getElementById('tb-trend'), ['Year', 'Starts', 'Achievements'],
+      D.map(d => [d.year + (d.provisional ? ' (prov.)' : ''), S(d.starts), S(d.achievements)]));
+    document.getElementById('t-starts').textContent = S(D.find(d => d.year === '2024/25').starts);
+  })();
+
+  /* ---------- 2. level mix ---------- */
+  (function () {
+    const svg = document.getElementById('c-mix'), D = DATA.mixshares;
+    const W = 440, H = 330, m = { t: 8, r: 46, b: 24, l: 132 };
+    const iw = W - m.l - m.r, bh = 20, gap = (H - m.t - m.b - D.length * bh) / (D.length - 1);
+    const cols = [['Intermediate', '--series-1'], ['Advanced', '--series-2'], ['Higher', '--series-3']];
+
+    D.forEach((r, i) => {
+      const yy = m.t + i * (bh + gap);
+      const lb = el('text', { x: m.l - 10, y: yy + bh / 2 + 4, class: 'lbl', 'text-anchor': 'end' });
+      lb.textContent = r.region.replace('Yorkshire and The Humber', 'Yorkshire & Humber'); svg.appendChild(lb);
+      let acc = 0;
+      cols.forEach(([k, cv], ci) => {
+        const w = (r[k] / 100) * iw;
+        // 2px surface gap between segments
+        const seg = el('rect', { x: m.l + acc, y: yy, width: Math.max(0, w - 2), height: bh, fill: css(cv),
+                                 rx: ci === 0 || ci === cols.length - 1 ? 4 : 0 });
+        seg.addEventListener('mousemove', e => showTip(e,
+          `<b>${r.region}</b><div class="row"><i style="background:${css(cv)}"></i>${k} ${r[k]}%</div>
+           <div class="row" style="opacity:.75">Total starts ${S(r.total)}</div>`));
+        seg.addEventListener('mouseleave', hideTip);
+        svg.appendChild(seg);
+        acc += w;
+      });
+      const hv = el('text', { x: m.l + iw + 8, y: yy + bh / 2 + 4, class: 'lbl-strong' });
+      hv.textContent = r.Higher + '%'; svg.appendChild(hv);
+    });
+    const cap = el('text', { x: m.l + iw + 8, y: H - 8, class: 'axis-txt', 'text-anchor': 'end' });
+    cap.textContent = 'labelled: higher share'; svg.appendChild(cap);
+
+    table(document.getElementById('tb-mix'), ['Region', 'Intermediate %', 'Advanced %', 'Higher %', 'Total starts'],
+      D.map(r => [r.region, r.Intermediate, r.Advanced, r.Higher, S(r.total)]));
+  })();
+
+  /* ---------- 3. suppression ---------- */
+  (function () {
+    const svg = document.getElementById('c-sup'), D = DATA.suppression;
+    const W = 440, H = 330, m = { t: 8, r: 52, b: 24, l: 132 };
+    const iw = W - m.l - m.r, bh = 20, gap = (H - m.t - m.b - D.length * bh) / (D.length - 1);
+    const max = Math.max(...D.map(d => d.rate)) * 1.12, c = css('--series-4');
+
+    D.forEach((r, i) => {
+      const yy = m.t + i * (bh + gap), w = (r.rate / max) * iw;
+      const lb = el('text', { x: m.l - 10, y: yy + bh / 2 + 4, class: 'lbl', 'text-anchor': 'end' });
+      lb.textContent = r.region.replace('Yorkshire and The Humber', 'Yorkshire & Humber'); svg.appendChild(lb);
+      const bar = el('rect', { x: m.l, y: yy, width: w, height: bh, fill: c, rx: 4 });
+      bar.addEventListener('mousemove', e => showTip(e,
+        `<b>${r.region}</b><div class="row"><i style="background:${c}"></i>${r.rate}% of cells withheld</div>
+         <div class="row" style="opacity:.75">${S(r.suppressed)} of ${S(r.total)}</div>`));
+      bar.addEventListener('mouseleave', hideTip);
+      svg.appendChild(bar);
+      const v = el('text', { x: m.l + w + 8, y: yy + bh / 2 + 4, class: 'lbl-strong' });
+      v.textContent = r.rate + '%'; svg.appendChild(v);
+    });
+
+    table(document.getElementById('tb-sup'), ['Region', 'Withheld %', 'Cells withheld', 'Cells total'],
+      D.map(r => [r.region, r.rate, S(r.suppressed), S(r.total)]));
+  })();
+
+  /* ---------- 4. restatements ---------- */
+  (function () {
+    const svg = document.getElementById('c-rest'), D = DATA.restate;
+    const W = 880, H = 250, m = { t: 16, r: 24, b: 44, l: 58 };
+    const iw = W - m.l - m.r, ih = H - m.t - m.b;
+    const max = Math.max(...D.map(d => d.revised)) * 1.15;
+    const bw = iw / D.length, inner = Math.min(120, bw * 0.34);
+    const y = v => m.t + ih - (v / max) * ih;
+    const c1 = css('--series-1'), c4 = css('--series-4');
+
+    for (let g = 0; g <= 4; g++) {
+      const v = (max / 4) * g;
+      svg.appendChild(el('line', { x1: m.l, x2: m.l + iw, y1: y(v), y2: y(v), class: 'gridline' }));
+      const tx = el('text', { x: m.l - 9, y: y(v) + 4, class: 'axis-txt', 'text-anchor': 'end' });
+      tx.textContent = S(Math.round(v)); svg.appendChild(tx);
+    }
+
+    D.forEach((d, i) => {
+      const cx = m.l + bw * i + bw / 2;
+      [[d.revised, c1, -1, 'Figures revised'], [d.disclosure, c4, 1, 'Disclosure status changed']].forEach(([v, c, side, name]) => {
+        // 2px gap between adjacent bars
+        const bx = cx + (side < 0 ? -inner - 1 : 1);
+        const bar = el('rect', { x: bx, y: y(v), width: inner, height: m.t + ih - y(v), fill: c, rx: 4 });
+        bar.addEventListener('mousemove', e => showTip(e,
+          `<b>${d.revision}</b><div class="row"><i style="background:${c}"></i>${name} ${S(v)}</div>`));
+        bar.addEventListener('mouseleave', hideTip);
+        svg.appendChild(bar);
+        const lv = el('text', { x: bx + inner / 2, y: y(v) - 6, class: 'lbl-strong', 'text-anchor': 'middle' });
+        lv.textContent = S(v); svg.appendChild(lv);
+      });
+      const tx = el('text', { x: cx, y: H - 14, class: 'axis-txt', 'text-anchor': 'middle' });
+      tx.textContent = d.revision; svg.appendChild(tx);
+    });
+
+    table(document.getElementById('tb-rest'), ['Revision', 'Figures revised', 'Disclosure changes'],
+      D.map(d => [d.revision, S(d.revised), S(d.disclosure)]));
+  })();
+})();
+</script>
