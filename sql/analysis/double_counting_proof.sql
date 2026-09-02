@@ -24,11 +24,25 @@
 -- see dbt/tests/assert_detail_grain_reconciles_to_published_total.sql.
 
 WITH latest AS (
-  SELECT *
-  FROM `dfe-apprenticeships-2026.bronze.raw_apprenticeships`
-  WHERE version = '2.0.2'
-    AND time_period = '202425'
-    AND geographic_level = 'National'
+  -- Bronze is append-only, so a version re-extracted on a later date has more
+  -- than one ingest partition and the external table globs all of them.
+  -- Deduplicate to the most recent extraction, exactly as the silver model
+  -- does -- without this the query silently returns double every figure.
+  SELECT * EXCEPT (_rank)
+  FROM (
+    SELECT *,
+      ROW_NUMBER() OVER (
+        PARTITION BY time_period, geographic_level, region_code,
+                     apprenticeship_level, age_youth_adult, age_group,
+                     funding_type, provider_type
+        ORDER BY ingest_date DESC
+      ) AS _rank
+    FROM `dfe-apprenticeships-2026.bronze.raw_apprenticeships`
+    WHERE version = '2.0.2'
+      AND time_period = '202425'
+      AND geographic_level = 'National'
+  )
+  WHERE _rank = 1
 ),
 scored AS (
   SELECT

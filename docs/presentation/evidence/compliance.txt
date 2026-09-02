@@ -1,0 +1,40 @@
+Compliance verification — project dfe-apprenticeships-2026
+================================================================
+
+C1  Data residency (UK / europe-west2)
+  PASS  all GCS buckets in europe-west2
+  PASS  BigQuery dataset bronze in europe-west2
+  PASS  BigQuery dataset silver in europe-west2
+  PASS  BigQuery dataset gold in europe-west2
+
+C2  Public access prevention
+  PASS  bronze: enforced
+  PASS  artifacts: enforced
+  PASS  build-staging: enforced
+
+C3  Keyless service accounts
+  PASS  ingestion: no downloadable keys
+  PASS  transform: no downloadable keys
+  PASS  orchestrator: no downloadable keys
+
+C4  Least privilege (no broad roles on service accounts)
+  PASS  no service account holds owner or editor
+
+C5  Retention lifecycle
+  PASS  bronze: lifecycle rules configured
+  PASS  build-staging: lifecycle rules configured
+
+C6  No personal data in the warehouse
+  PASS  no identifier-shaped columns in gold
+        Source is aggregate statistics; smallest published cell is 10.
+
+C7  Statistical disclosure control preserved end to end
+  PASS  no unrecognised suppression markers (0)
+  PASS  no suppressed figure carries a value (0)
+
+C8  Audit trail
+  PASS  bronze object versioning enabled (raw data immutable)
+  PASS  SCD-2 lineage retains 5 source versions
+
+================================================================
+  18 passed, 0 failed
