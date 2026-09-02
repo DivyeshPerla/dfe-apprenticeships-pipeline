@@ -32,3 +32,8 @@ output "build_staging_bucket" {
   description = "In-region Cloud Build source staging bucket (residency control)."
   value       = google_storage_bucket.build_staging.name
 }
+
+output "build_service_account" {
+  description = "Least-privilege Cloud Build identity (compliance control C4)."
+  value       = google_service_account.build.email
+}

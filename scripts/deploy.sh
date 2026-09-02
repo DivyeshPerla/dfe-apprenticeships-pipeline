@@ -29,11 +29,19 @@ echo "==> 2/3 building ${IMAGE}"
 #
 # --gcs-source-staging-dir is a RESIDENCY CONTROL, not an optimisation:
 # without it gcloud stages source in an auto-created US bucket.
+# --service-account is a PRIVILEGE control: without it Cloud Build runs as the
+# default compute SA, which carries project-wide roles/editor.
+# A build with a user-specified SA must also say where logs go. Pointing at
+# our own in-region artifacts bucket keeps logs under buckets this project
+# controls, rather than an auto-created one the build SA cannot reach.
 STAGING="gs://${PREFIX}-build-staging-${PROJECT}/source"
+BUILD_SA="projects/${PROJECT}/serviceAccounts/${PREFIX}-build@${PROJECT}.iam.gserviceaccount.com"
 gcloud builds submit \
   --project="${PROJECT}" \
   --region="${REGION}" \
   --gcs-source-staging-dir="${STAGING}" \
+  --service-account="${BUILD_SA}" \
+  --gcs-log-dir="gs://${PREFIX}-artifacts-${PROJECT}/build-logs" \
   --tag="${IMAGE}" \
   .
 
