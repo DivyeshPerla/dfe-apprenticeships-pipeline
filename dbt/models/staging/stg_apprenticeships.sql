@@ -19,7 +19,34 @@
 
 with source as (
 
-    select * from {{ source('bronze', 'raw_apprenticeships') }}
+    /* IDEMPOTENCY GUARD.
+
+       Bronze is append-only: re-extracting a version lands a NEW
+       ingest_date partition beside the old one, and the external table
+       globs every partition. So a re-run of the same source version
+       duplicates every one of its rows here.
+
+       This is not hypothetical -- it fired the moment the calendar date
+       rolled over between two runs, and the uniqueness test on
+       (row_key, dataset_version) caught it before anything reached gold.
+
+       Bronze keeps all copies (that is the point of an immutable raw
+       layer); silver resolves each version to its most recent extraction. */
+
+    select * except (_ingest_rank)
+    from (
+        select
+            *,
+            row_number() over (
+                partition by
+                    version, time_period, geographic_level, region_code,
+                    apprenticeship_level, age_youth_adult, age_group,
+                    funding_type, provider_type
+                order by ingest_date desc
+            ) as _ingest_rank
+        from {{ source('bronze', 'raw_apprenticeships') }}
+    )
+    where _ingest_rank = 1
 
 ),
 
