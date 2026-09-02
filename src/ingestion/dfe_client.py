@@ -6,9 +6,10 @@ Docs:     https://dev.statistics.api.education.gov.uk/
 Endpoints used (all verified against the live API):
   GET  /data-sets/{id}                      -> dataset summary + latestVersion
   GET  /data-sets/{id}/versions             -> full version history (paged)
-  GET  /data-sets/{id}/meta                 -> filters, indicators, locations, timePeriods
+  GET  /data-sets/{id}/meta                 -> filters, indicators, locations,
+                                               timePeriods
   GET  /data-sets/{id}/csv?dataSetVersion=X -> gzipped flat CSV for a given version
-  POST /data-sets/{id}/query                -> paged JSON query (paging goes in the BODY)
+  POST /data-sets/{id}/query                -> paged JSON query (paging in BODY)
 """
 
 from __future__ import annotations

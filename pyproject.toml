@@ -1,6 +1,9 @@
 [tool.ruff]
 line-length = 88
-target-version = "py312"
+# The container runs 3.12, but declaring 3.10 keeps the code portable and
+# stops UP017 rewriting dt.timezone.utc to the 3.11+ dt.UTC alias -- which
+# would break anyone running the ingestion locally on 3.10.
+target-version = "py310"
 src = ["src"]
 
 [tool.ruff.lint]
