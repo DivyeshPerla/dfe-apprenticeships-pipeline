@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Apprenticeships Data Platform</title>
+<meta name="description" content="A production data pipeline on Google Cloud. The obvious query against this source returns an answer 24x too large.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --bg:#fff; --ink:#0a0a0a; --ink-2:#3d3d3d; --muted:#8a8a8a;
+    --rule:#e6e6e6; --wrong:#c62828; --right:#17754f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0a0a0a; --ink:#f5f5f5; --ink-2:#c4c4c4; --muted:#7e7e7e;
+            --rule:#242424; --wrong:#ff7565; --right:#4ec99a; color-scheme: dark; }
+  }
+  *{box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);margin:0;
+       font-family:"IBM Plex Sans",ui-sans-serif,-apple-system,"Segoe UI",sans-serif;
+       font-weight:400;-webkit-font-smoothing:antialiased}
+  main{max-width:760px;margin:0 auto;padding:90px 28px 120px}
+  @media(max-width:620px){main{padding:48px 18px 70px}}
+  h1{font-weight:300;font-size:clamp(34px,6vw,58px);line-height:1.04;
+     letter-spacing:-.03em;margin:0 0 22px;text-wrap:balance}
+  .lede{font-size:19px;line-height:1.6;color:var(--muted);margin:0 0 46px;max-width:52ch;font-weight:300}
+  p{font-size:16px;line-height:1.66;color:var(--ink-2);font-weight:300;max-width:60ch}
+  strong{color:var(--ink);font-weight:500}
+  .hero{font:500 clamp(64px,12vw,120px)/.9 "IBM Plex Mono",monospace;
+        letter-spacing:-.06em;color:var(--wrong);margin:0}
+  .hero-k{font-size:15px;color:var(--muted);margin:16px 0 52px;font-weight:300}
+  .cta{display:inline-block;border:1px solid var(--ink);color:var(--ink);
+       text-decoration:none;padding:15px 30px;font-size:15px;font-weight:400;
+       transition:background .15s,color .15s}
+  .cta:hover{background:var(--ink);color:var(--bg)}
+  .cta:focus-visible{outline:2px solid var(--right);outline-offset:3px}
+  h2{font-weight:400;font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+     color:var(--muted);margin:64px 0 18px;font-family:"IBM Plex Mono",monospace}
+  ul{list-style:none;margin:0;padding:0}
+  li{border-bottom:1px solid var(--rule);padding:15px 0}
+  li a{color:var(--ink);text-decoration:none;font-size:16px;font-weight:400}
+  li a:hover{color:var(--right)}
+  li span{display:block;font-size:13.5px;color:var(--muted);margin-top:4px;font-weight:300}
+  .figs{display:flex;flex-wrap:wrap;gap:40px;margin:14px 0 0}
+  .fig .v{font:500 34px/1 "IBM Plex Mono",monospace;letter-spacing:-.04em;color:var(--right)}
+  .fig .k{font-size:12.5px;color:var(--muted);margin-top:7px;font-weight:300}
+  footer{margin-top:70px;padding-top:24px;border-top:1px solid var(--rule);
+         font-size:12.5px;color:var(--muted);line-height:1.6;font-weight:300}
+</style>
+</head>
+<body>
+<main>
+  <p class="hero">24&times;</p>
+  <p class="hero-k">how wrong the obvious query is, against this public dataset</p>
+
+  <h1>Apprenticeships data platform</h1>
+  <p class="lede">A production data pipeline on Google Cloud, built because the
+  source is wrong in four ways &mdash; and none of them raise an error.</p>
+
+  <a class="cta" href="presentation/deck.html">Read the case study &rarr;</a>
+
+  <h2>What it is</h2>
+  <p>UK government statistics: a free API, seventeen tidy columns, fifty thousand
+  rows. Profiling it before writing any pipeline code turned up four defects, none
+  visible in the schema. <strong>80% of rows are subtotals mixed in with the
+  detail</strong>, so a plain <code>SUM</code> counts the same records once per
+  subtotal they appear in.</p>
+  <p>The pipeline handles all four, proves it with tests on every run, and verifies
+  its own compliance posture against live cloud state.</p>
+
+  <div class="figs">
+    <div class="fig"><div class="v">51</div><div class="k">resources, all as code</div></div>
+    <div class="fig"><div class="v">26</div><div class="k">tests gating every publish</div></div>
+    <div class="fig"><div class="v">18</div><div class="k">compliance checks</div></div>
+    <div class="fig"><div class="v">&pound;0</div><div class="k">per month</div></div>
+  </div>
+
+  <h2>Read further</h2>
+  <ul>
+    <li><a href="presentation/deck.html">Case study deck</a>
+      <span>Fifteen slides, with live console screenshots</span></li>
+    <li><a href="INSIGHTS.md">Analytical findings</a>
+      <span>What the data showed once it could be trusted &mdash; and what it cannot answer</span></li>
+    <li><a href="profiling/PROFILE.md">Source profiling</a>
+      <span>The evidence behind every headline number</span></li>
+    <li><a href="COMPLIANCE.md">Compliance and governance</a>
+      <span>Eighteen controls, checked against live state rather than asserted</span></li>
+    <li><a href="OPEN_QUESTIONS.md">Open questions</a>
+      <span>What this project asserts but has not confirmed</span></li>
+    <li><a href="https://github.com/DivyeshPerla/dfe-apprenticeships-pipeline">Source code</a>
+      <span>Terraform, dbt, ingestion, CI</span></li>
+  </ul>
+
+  <footer>
+    Contains public sector information licensed under the Open Government Licence v3.0.
+    Source: Department for Education, Explore Education Statistics.
+    No personal data is processed; the source is aggregate official statistics.
+  </footer>
+</main>
+</body>
+</html>

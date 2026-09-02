@@ -112,17 +112,6 @@
   }
   figure.shot.empty .ph span { font-size: 13.5px; color: var(--ink-2); font-weight: 300; }
 
-  details { border-top: 1px solid var(--rule); }
-  summary {
-    cursor: pointer; list-style: none; padding: 13px 0;
-    font: 500 11px/1 "IBM Plex Mono", monospace; letter-spacing: .14em;
-    text-transform: uppercase; color: var(--muted);
-  }
-  summary::-webkit-details-marker { display: none; }
-  summary::before { content: "+  "; }
-  details[open] summary::before { content: "−  "; }
-  summary:hover { color: var(--ink); }
-  details p { font-size: 14.5px; color: var(--muted); max-width: 66ch; padding-bottom: 14px; }
 
   pre.term {
     background: var(--ink); color: #eaeaea; font-family: "IBM Plex Mono", monospace;
@@ -144,9 +133,6 @@
   <div class="spacer"></div>
   <p class="fine">Sai Teja Sunku &middot; data engineering case study</p>
 </section>
-<details><summary>Notes</summary>
-<p>Open on the number, not the architecture. Don't explain the dataset — the audience doesn't need to know what it is. The claim is that a reasonable query on real public data returns something 24 times wrong, and the rest of the deck earns that.</p></details>
-
 <section class="slide">
   <div class="n">02 &middot; Setup</div>
   <h2>I picked a public dataset at random</h2>
@@ -158,9 +144,6 @@
   <p class="fine">The dataset is incidental. The failure modes are not — they turn up in most
   real source data.</p>
 </section>
-<details><summary>Notes</summary>
-<p>Say plainly that the dataset was arbitrary and no domain knowledge is needed. What's being shown is the method: profile before you build, then design for what you find.</p></details>
-
 <section class="slide">
   <div class="n">03 &middot; The problem</div>
   <div class="hero">24&times;</div>
@@ -188,9 +171,6 @@
 | <span class="g">OFFICIAL published total</span>  |      <span class="g">353500</span> |         1 |
 +---------------------------+--------------+-----------+</pre>
 </section>
-<details><summary>Notes</summary>
-<p>The silent failure is the point — nothing warns you. This is the argument for modelling the grain explicitly and testing it, rather than trusting that a query which runs is a query which is right.</p></details>
-
 <section class="slide">
   <div class="n">04 &middot; The problem</div>
   <h2>And three more like it</h2>
@@ -206,9 +186,6 @@
   <div class="spacer"></div>
   <p class="fine">Each corrupts a result quietly rather than failing loudly.</p>
 </section>
-<details><summary>Notes</summary>
-<p>Keep this brisk — a list, not a deep dive. The audience only needs to accept the data is genuinely hostile before seeing the architecture.</p></details>
-
 <section class="slide">
   <div class="n">05 &middot; The build</div>
   <h2>Architecture</h2>
@@ -252,9 +229,6 @@
     <figcaption>Raw data, one immutable folder per source version, held in the London region.</figcaption>
   </figure>
 </section>
-<details><summary>Notes</summary>
-<p>Nothing here was clicked into existence in a console. If asked whether it could be rebuilt: yes, in about four minutes — the difference between a demo and something operable.</p></details>
-
 <section class="slide">
   <div class="n">06 &middot; The build</div>
   <h2>Where each problem gets handled</h2>
@@ -275,9 +249,6 @@
     <figcaption>Raw, cleaned, and published layers, each rebuildable from the one before.</figcaption>
   </figure>
 </section>
-<details><summary>Notes</summary>
-<p>The key idea: the correct answer is the easy one. A consumer of the published views can't reproduce the 24× error by accident, because the guardrail lives in the model rather than in the analyst's discipline.</p></details>
-
 <section class="slide">
   <div class="n">07 &middot; The build</div>
   <h2>It only runs when there's work</h2>
@@ -299,9 +270,6 @@
     <figcaption>Both paths were run for real, not described.</figcaption>
   </figure>
 </section>
-<details><summary>Notes</summary>
-<p>If the usual orchestrator comes up: it's the more familiar answer but has no free tier, and this workload is quarterly. The same branching is a few lines here for effectively nothing.</p></details>
-
 <section class="slide">
   <div class="n">08 &middot; Rigour</div>
   <h2>The bug the tests caught</h2>
@@ -322,9 +290,6 @@
     <figcaption>Models and tests run together, so a failure blocks publication.</figcaption>
   </figure>
 </section>
-<details><summary>Notes</summary>
-<p>The strongest slide — don't rush it. A latent bug that only appears when a date changes, caught automatically, in production, on its first real occurrence. Evidence the tests aren't decorative. It surfaced only because the earlier change was verified rather than assumed.</p></details>
-
 <section class="slide">
   <div class="n">09 &middot; Governance</div>
   <h2>Compliance checked, not claimed</h2>
@@ -360,9 +325,6 @@ C8  Audit trail
 ================================================================
   <span class="g">18 passed, 0 failed</span></pre>
 </section>
-<details><summary>Notes</summary>
-<p>Both findings were invisible to a written policy and obvious to an automated check. The second is the better story: the obvious remediation would have broken the build, so knowing why the easy fix is wrong matters more than reporting a clean pass.</p></details>
-
 <section class="slide">
   <div class="n">10 &middot; Cost</div>
   <h2>Nothing per month</h2>
@@ -379,9 +341,6 @@ C8  Audit trail
     <figcaption>Budget alerts were set before any resource was created.</figcaption>
   </figure>
 </section>
-<details><summary>Notes</summary>
-<p>Frame the constraint as a design input, not a compromise. Choosing the cheaper right tool over the more impressive one is the judgement being demonstrated.</p></details>
-
 <section class="slide">
   <div class="n">11 &middot; Payoff</div>
   <h2>What the data actually showed</h2>
@@ -419,9 +378,6 @@ C8  Audit trail
   <p style="margin-top:30px">Total volume barely moved. <strong>The mix inverted.</strong>
   Anyone watching headline numbers alone would have concluded the market was flat and stable.</p>
 </section>
-<details><summary>Notes</summary>
-<p>This is the argument for the whole build: the finding was invisible in headline figures and only appeared once the data could be trusted at detail level. Mention the regional spread if there's time — the shift is national, but the fastest region moved half again as far as the slowest.</p></details>
-
 <section class="slide">
   <div class="n">12 &middot; Intelligence</div>
   <h2>An AI that says what it cannot tell you</h2>
@@ -440,9 +396,6 @@ incomplete</span>.</pre>
   technically accurate and materially misleading. <strong>Refusing to imply
   completeness is the feature.</strong></p>
 </section>
-<details><summary>Notes</summary>
-<p>This is the differentiator. Most AI-on-data demos generate confident prose over incomplete inputs. Here the suppression metadata is a first-class input, so the model's job includes stating the limits. If asked how: the withheld-cell counts come from the status columns built in the silver layer.</p></details>
-
 <section class="slide">
   <div class="n">13 &middot; Intelligence</div>
   <h2>Forecasting the crossover, honestly</h2>
@@ -470,9 +423,6 @@ incomplete</span>.</pre>
   <p><strong>The interval is the finding.</strong> Nearly nine points wide, it says
   the direction is certain and the year is not.</p>
 </section>
-<details><summary>Notes</summary>
-<p>Deliberately the least flashy slide and the most defensible. Anyone who has forecast on short annual series will recognise that a confident point estimate here would be a red flag. Say plainly: the direction is a decision input, the specific year is not.</p></details>
-
 <section class="slide">
   <div class="n">14 &middot; Intelligence</div>
   <h2>Machine learning pointed at data quality</h2>
@@ -490,9 +440,6 @@ incomplete</span>.</pre>
   not defects. <strong>The detector found the real structure in the revisions,
   which is exactly what a review queue should do.</strong></p>
 </section>
-<details><summary>Notes</summary>
-<p>Worth being explicit that the top hits were not errors. A detector that only ever fires on genuine faults is usually overfitted; one that surfaces the dominant structural pattern and hands it to a human is working. This is AI serving the pipeline rather than sitting beside it.</p></details>
-
 <section class="slide">
   <div class="n">15</div>
   <h1>Built for data that lies</h1>
@@ -507,7 +454,4 @@ incomplete</span>.</pre>
   <p class="fine" style="max-width:74ch">Contains public sector information licensed under the
   Open Government Licence v3.0. Source: UK Department for Education, Explore Education Statistics.</p>
 </section>
-<details><summary>Notes</summary>
-<p>Close on the traps, not the tooling. Anyone can wire cloud services together; the value was noticing the data was wrong in four ways and building something that doesn't repeat the error.</p></details>
-
 </main>
