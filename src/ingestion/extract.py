@@ -15,7 +15,6 @@ import json
 import logging
 import os
 import sys
-import tempfile
 
 from ingestion.dfe_client import APPRENTICESHIPS_DATASET_ID, DfEStatisticsClient
 from ingestion.gcs import upload_partition
@@ -31,9 +30,7 @@ def _sha256(path: str) -> str:
     return h.hexdigest()
 
 
-def extract_version(
-    client: DfEStatisticsClient, version: str, out_dir: str
-) -> dict:
+def extract_version(client: DfEStatisticsClient, version: str, out_dir: str) -> dict:
     """Download one version's CSV + meta and write a reconciliation manifest."""
     os.makedirs(out_dir, exist_ok=True)
     csv_path = os.path.join(out_dir, "data.csv")
@@ -96,7 +93,10 @@ def main(argv: list[str] | None = None) -> int:
             )
         return 0
 
-    today = dt.date.today().isoformat()
+    # UTC, not local: the manifest timestamps in UTC, and a local date would
+    # disagree with it either side of midnight, putting a partition under the
+    # wrong ingest_date.
+    today = dt.datetime.now(dt.timezone.utc).date().isoformat()
     versions = (
         [v.version for v in client.list_versions()]
         if args.all_versions

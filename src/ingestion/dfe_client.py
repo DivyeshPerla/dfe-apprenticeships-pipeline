@@ -15,7 +15,8 @@ from __future__ import annotations
 
 import dataclasses
 import logging
-from typing import Any, Iterator
+from collections.abc import Iterator
+from typing import Any
 
 import requests
 
@@ -41,7 +42,7 @@ class DataSetVersion:
     time_period_end: str
 
     @classmethod
-    def from_api(cls, payload: dict[str, Any]) -> "DataSetVersion":
+    def from_api(cls, payload: dict[str, Any]) -> DataSetVersion:
         periods = payload.get("timePeriods", {})
         return cls(
             version=payload["version"],
@@ -132,8 +133,7 @@ class DfEStatisticsClient:
         ) as resp:
             resp.raise_for_status()
             with open(dest_path, "wb") as fh:
-                for chunk in resp.iter_content(chunk_size=1 << 20):
-                    fh.write(chunk)
+                fh.writelines(resp.iter_content(chunk_size=1 << 20))
         return dest_path
 
     def query(

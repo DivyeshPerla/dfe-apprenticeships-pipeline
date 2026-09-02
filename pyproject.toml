@@ -1,0 +1,13 @@
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+src = ["src"]
+
+[tool.ruff.lint]
+# Beyond the defaults: pyupgrade, bugbear, comprehensions, timezone-safety,
+# and refurb. DTZ matters here -- a naive local date would put a partition
+# under the wrong ingest_date either side of midnight.
+select = ["E", "F", "W", "I", "UP", "B", "C4", "DTZ", "FURB", "SIM"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["ingestion"]

@@ -1,0 +1,108 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# No cloud credentials are needed for these jobs by design: everything here
+# must be runnable by a reviewer who has cloned the repo and has no access to
+# the GCP project. Checks that DO need the live project (compliance
+# verification, dbt build) run in the pipeline itself -- see
+# scripts/verify_compliance.sh and the transform Cloud Run job.
+permissions:
+  contents: read
+
+jobs:
+  python:
+    name: Python
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-ingest.txt
+          pip install ruff
+
+      - name: Lint
+        run: ruff check src/
+
+      - name: Format check
+        run: ruff format --check src/
+
+      - name: Import check
+        run: |
+          PYTHONPATH=src python -c "
+          from ingestion import dfe_client, extract, gcs, version_watcher
+          print('all ingestion modules import cleanly')
+          "
+
+  terraform:
+    name: Terraform
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.5.7"
+
+      - name: Format check
+        run: terraform -chdir=terraform fmt -check -recursive
+
+      - name: Validate
+        # -backend=false validates syntax and provider schemas without
+        # needing credentials or remote state.
+        run: |
+          terraform -chdir=terraform init -backend=false -input=false
+          terraform -chdir=terraform validate
+
+  dbt:
+    name: dbt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dbt
+        run: |
+          python -m pip install --upgrade pip
+          pip install "dbt-bigquery>=1.10,<2.0"
+
+      - name: Install packages
+        run: dbt deps --project-dir dbt --profiles-dir dbt
+
+      - name: Parse project
+        # `dbt parse` resolves refs, sources, macros and tests without
+        # connecting to the warehouse -- it catches a broken ref or a bad
+        # Jinja macro, which is most of what breaks a dbt project.
+        run: dbt parse --project-dir dbt --profiles-dir dbt
+
+  shell:
+    name: Shell scripts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Syntax check
+        run: |
+          for f in scripts/*.sh sql/bronze/*.sh; do
+            echo "checking $f"
+            bash -n "$f"
+          done
+
+      - name: ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          scandir: ./scripts
+          severity: warning

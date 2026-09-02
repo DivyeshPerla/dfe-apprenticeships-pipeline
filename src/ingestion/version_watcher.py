@@ -109,8 +109,11 @@ def main(argv: list[str] | None = None) -> int:
 
     write_state(
         args.state_bucket,
-        {**payload, "action": ACTION_EXTRACT,
-         "decided_at": dt.datetime.now(dt.timezone.utc).isoformat()},
+        {
+            **payload,
+            "action": ACTION_EXTRACT,
+            "decided_at": dt.datetime.now(dt.timezone.utc).isoformat(),
+        },
         DECISION_OBJECT,
     )
     # Only advance last-seen state after a successful publish, so a failure
