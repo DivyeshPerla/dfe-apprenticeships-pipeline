@@ -26,9 +26,14 @@ terraform -chdir=terraform apply -auto-approve \
 echo "==> 2/3 building ${IMAGE}"
 # Cloud Build keeps this inside the free tier and avoids needing a local
 # Docker daemon.
+#
+# --gcs-source-staging-dir is a RESIDENCY CONTROL, not an optimisation:
+# without it gcloud stages source in an auto-created US bucket.
+STAGING="gs://${PREFIX}-build-staging-${PROJECT}/source"
 gcloud builds submit \
   --project="${PROJECT}" \
   --region="${REGION}" \
+  --gcs-source-staging-dir="${STAGING}" \
   --tag="${IMAGE}" \
   .
 

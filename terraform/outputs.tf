@@ -27,3 +27,8 @@ output "bronze_uri" {
   description = "Base URI for the raw apprenticeships landing zone."
   value       = "gs://${google_storage_bucket.bronze.name}/apprenticeships"
 }
+
+output "build_staging_bucket" {
+  description = "In-region Cloud Build source staging bucket (residency control)."
+  value       = google_storage_bucket.build_staging.name
+}
