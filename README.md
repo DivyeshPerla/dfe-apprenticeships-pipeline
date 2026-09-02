@@ -5,6 +5,7 @@ built because the obvious query against this source returns an answer that is
 **24× too large**, and nothing errors.
 
 - **Deck:** [`docs/presentation/deck.html`](docs/presentation/deck.html)
+- **How it was built:** [`docs/BUILD_WALKTHROUGH.md`](docs/BUILD_WALKTHROUGH.md)
 - **Findings:** [`docs/INSIGHTS.md`](docs/INSIGHTS.md)
 - **Source profiling (the evidence):** [`docs/profiling/PROFILE.md`](docs/profiling/PROFILE.md)
 - **Governance:** [`docs/COMPLIANCE.md`](docs/COMPLIANCE.md)
