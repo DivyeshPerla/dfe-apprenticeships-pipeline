@@ -23,6 +23,10 @@ Sign in as **divyeshperla@gmail.com** — the account that owns these resources.
 ## AI
 - [BQML models](https://console.cloud.google.com/bigquery?project=dfe-apprenticeships-2026&ws=!1m4!1m3!3m2!1sdfe-apprenticeships-2026!2sgold) — region_segments (k-means), gemini (remote)
 
+## Monitoring
+- [**Pipeline dashboard**](https://console.cloud.google.com/monitoring/dashboards/builder/c85e238d-347d-45ef-a151-fc03e773d533?project=dfe-apprenticeships-2026) — executions, failures, runtime, log errors
+- [Alert policies](https://console.cloud.google.com/monitoring/alerting/policies?project=dfe-apprenticeships-2026) — fires when the transform job fails
+
 ## Operations
 - [Cloud Build history](https://console.cloud.google.com/cloud-build/builds?project=dfe-apprenticeships-2026)
 - [Logs](https://console.cloud.google.com/logs/query?project=dfe-apprenticeships-2026)
