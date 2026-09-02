@@ -1,408 +1,413 @@
 <title>The 24x Answer</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap">
 <style>
   :root {
     color-scheme: light;
-    --paper:   #f2f4f3;
-    --panel:   #fbfcfb;
-    --ink:     #12171a;
-    --ink-2:   #47524f;
-    --muted:   #79837f;
-    --rule:    #dde2df;
-    --rule-2:  #ecefed;
-    --correct: #12695d;
-    --trap:    #a3371f;
-    --amber:   #8a6410;
-    --ok-wash: #12695d12;
-    --bad-wash:#a3371f12;
+    --bg:     #ffffff;
+    --ink:    #0a0a0a;
+    --ink-2:  #3d3d3d;
+    --muted:  #8a8a8a;
+    --rule:   #e6e6e6;
+    --wrong:  #c62828;
+    --right:  #17754f;
+    --hold:   #9a6b00;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
       color-scheme: dark;
-      --paper: #0e1213; --panel: #161b1c; --ink: #eef2f0; --ink-2: #b9c3c0;
-      --muted: #8b9895; --rule: #2a3234; --rule-2: #1e2526;
-      --correct: #4fbfae; --trap: #e08a70; --amber: #d3a34a;
-      --ok-wash: #4fbfae1c; --bad-wash: #e08a701c;
+      --bg: #0a0a0a; --ink: #f5f5f5; --ink-2: #c4c4c4; --muted: #7e7e7e;
+      --rule: #242424; --wrong: #ff7565; --right: #4ec99a; --hold: #d9a441;
     }
   }
   :root[data-theme="dark"] {
     color-scheme: dark;
-    --paper: #0e1213; --panel: #161b1c; --ink: #eef2f0; --ink-2: #b9c3c0;
-    --muted: #8b9895; --rule: #2a3234; --rule-2: #1e2526;
-    --correct: #4fbfae; --trap: #e08a70; --amber: #d3a34a;
-    --ok-wash: #4fbfae1c; --bad-wash: #e08a701c;
+    --bg: #0a0a0a; --ink: #f5f5f5; --ink-2: #c4c4c4; --muted: #7e7e7e;
+    --rule: #242424; --wrong: #ff7565; --right: #4ec99a; --hold: #d9a441;
   }
 
   * { box-sizing: border-box; }
   body {
-    background: var(--paper); color: var(--ink); margin: 0;
+    background: var(--bg); color: var(--ink); margin: 0;
     font-family: "IBM Plex Sans", ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
-    -webkit-font-smoothing: antialiased;
+    font-weight: 400; -webkit-font-smoothing: antialiased;
   }
-  main { max-width: 940px; margin: 0 auto; padding: 40px 26px 100px; }
-  @media (max-width: 620px) { main { padding: 22px 15px 60px; } }
+  main { max-width: 900px; margin: 0 auto; padding: 0 30px 120px; }
+  @media (max-width: 620px) { main { padding: 0 18px 70px; } }
 
   .slide {
-    background: var(--panel); border: 1px solid var(--rule); border-radius: 3px;
-    padding: 60px 62px; margin-bottom: 12px; min-height: 420px;
+    border-top: 1px solid var(--rule);
+    padding: 84px 0 76px; min-height: 460px;
     display: flex; flex-direction: column;
   }
-  @media (max-width: 620px) { .slide { padding: 30px 22px; min-height: 0; } }
+  .slide:first-child { border-top: 0; padding-top: 96px; }
+  @media (max-width: 620px) { .slide { padding: 46px 0 40px; min-height: 0; } }
 
   .n {
-    font: 500 10.5px/1 "IBM Plex Mono", monospace; letter-spacing: .14em;
-    color: var(--muted); text-transform: uppercase; margin-bottom: 26px;
+    font: 500 11px/1 "IBM Plex Mono", monospace; letter-spacing: .18em;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 40px;
   }
   h1 {
-    font-family: Newsreader, Georgia, serif; font-weight: 400;
-    font-size: clamp(32px, 5.2vw, 54px); line-height: 1.06; letter-spacing: -.018em;
-    margin: 0; text-wrap: balance; max-width: 20ch;
+    font-weight: 300; font-size: clamp(34px, 5.6vw, 60px); line-height: 1.04;
+    letter-spacing: -.03em; margin: 0; text-wrap: balance; max-width: 17ch;
   }
   h2 {
-    font-family: Newsreader, Georgia, serif; font-weight: 400;
-    font-size: clamp(26px, 3.6vw, 38px); line-height: 1.12; letter-spacing: -.015em;
-    margin: 0 0 20px; text-wrap: balance; max-width: 24ch;
+    font-weight: 300; font-size: clamp(26px, 3.8vw, 40px); line-height: 1.1;
+    letter-spacing: -.025em; margin: 0 0 30px; text-wrap: balance; max-width: 21ch;
   }
-  p { font-size: 15.5px; line-height: 1.62; color: var(--ink-2); max-width: 58ch; margin: 0 0 14px; }
-  p.sub { font-size: 17px; color: var(--muted); max-width: 54ch; margin-top: 18px; }
+  p { font-size: 16px; line-height: 1.66; color: var(--ink-2); max-width: 56ch; margin: 0 0 16px; font-weight: 300; }
+  p.lede { font-size: 19px; color: var(--muted); max-width: 50ch; margin-top: 22px; }
   strong { color: var(--ink); font-weight: 500; }
-  .spacer { flex: 1; min-height: 20px; }
+  .spacer { flex: 1; min-height: 24px; }
+  .fine { font-size: 13px; color: var(--muted); }
 
-  .figs { display: flex; flex-wrap: wrap; gap: 46px; }
+  /* numbers carry the only colour */
+  .figs { display: flex; flex-wrap: wrap; gap: 56px; margin: 8px 0; }
   .fig .v {
-    font: 500 clamp(34px,5vw,46px)/1 "IBM Plex Mono", monospace;
-    letter-spacing: -.035em; font-variant-numeric: tabular-nums;
+    font: 500 clamp(40px,6.4vw,62px)/1 "IBM Plex Mono", monospace;
+    letter-spacing: -.05em; font-variant-numeric: tabular-nums; color: var(--ink);
   }
-  .fig .v.ok  { color: var(--correct); }
-  .fig .v.bad { color: var(--trap); }
-  .fig .k { font-size: 13px; color: var(--muted); margin-top: 9px; max-width: 22ch; line-height: 1.45; }
+  .fig .v.wrong { color: var(--wrong); }
+  .fig .v.right { color: var(--right); }
+  .fig .k { font-size: 13px; color: var(--muted); margin-top: 12px; max-width: 20ch; line-height: 1.45; font-weight: 300; }
 
   .hero {
-    font: 500 clamp(72px,13vw,132px)/.9 "IBM Plex Mono", monospace;
-    letter-spacing: -.05em; color: var(--trap); font-variant-numeric: tabular-nums;
+    font: 500 clamp(78px,15vw,168px)/.86 "IBM Plex Mono", monospace;
+    letter-spacing: -.06em; font-variant-numeric: tabular-nums; color: var(--wrong);
   }
+  .hero-k { font-size: 15px; color: var(--muted); margin-top: 20px; max-width: 44ch; line-height: 1.5; font-weight: 300; }
 
-  .wrap { overflow-x: auto; margin: 6px 0 0; }
-  table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
-  th, td { text-align: right; padding: 9px 14px; border-bottom: 1px solid var(--rule-2); font-variant-numeric: tabular-nums; }
-  th:first-child, td:first-child { text-align: left; }
+  .wrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; font-weight: 300; }
+  th, td { text-align: right; padding: 13px 16px; border-bottom: 1px solid var(--rule); font-variant-numeric: tabular-nums; }
+  th:first-child, td:first-child { text-align: left; padding-left: 0; }
+  th:last-child, td:last-child { padding-right: 0; }
   thead th {
-    font: 500 10.5px/1 "IBM Plex Mono", monospace; letter-spacing: .11em;
-    text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--rule);
-  }
-  td.num { font-family: "IBM Plex Mono", monospace; }
-  tr.ok td  { background: var(--ok-wash); }
-  tr.bad td { background: var(--bad-wash); }
-  code { font-family: "IBM Plex Mono", monospace; font-size: .9em; }
-
-  ul { margin: 4px 0 0; padding-left: 19px; }
-  li { font-size: 15.5px; line-height: 1.6; color: var(--ink-2); margin-bottom: 11px; max-width: 58ch; }
-
-  .shot {
-    border: 1.5px dashed var(--rule); border-radius: 3px; padding: 17px 20px; margin-top: 24px;
-  }
-  .shot .lab {
-    font: 500 10.5px/1 "IBM Plex Mono", monospace; letter-spacing: .13em;
-    text-transform: uppercase; color: var(--amber); margin-bottom: 8px;
-  }
-  .shot p { font-size: 13.5px; margin: 0; color: var(--ink-2); max-width: 62ch; }
-
-  details { margin: 0 0 30px; }
-  summary {
-    cursor: pointer; list-style: none; padding: 8px 62px;
-    font: 500 10.5px/1 "IBM Plex Mono", monospace; letter-spacing: .13em;
+    font: 500 11px/1 "IBM Plex Mono", monospace; letter-spacing: .14em;
     text-transform: uppercase; color: var(--muted);
   }
-  @media (max-width: 620px) { summary { padding: 8px 22px; } }
+  td.num { font-family: "IBM Plex Mono", monospace; font-weight: 500; }
+  td.num.wrong { color: var(--wrong); }
+  td.num.right { color: var(--right); }
+  code { font-family: "IBM Plex Mono", monospace; font-size: .9em; }
+
+  ul { margin: 0; padding-left: 0; list-style: none; }
+  li {
+    font-size: 16px; line-height: 1.6; color: var(--ink-2); font-weight: 300;
+    max-width: 58ch; padding: 16px 0; border-bottom: 1px solid var(--rule);
+  }
+  li:first-child { padding-top: 0; }
+
+  /* screenshot slots */
+  figure.shot { margin: 34px 0 0; }
+  figure.shot img { display: block; width: 100%; border: 1px solid var(--rule); }
+  figure.shot figcaption { font: 400 12.5px/1.5 "IBM Plex Sans", sans-serif; color: var(--muted); margin-top: 10px; }
+  figure.shot .ph { display: none; }
+  figure.shot.empty img { display: none; }
+  figure.shot.empty .ph {
+    display: block; border: 1px dashed var(--rule); padding: 22px 24px;
+  }
+  figure.shot.empty .ph b {
+    display: block; font: 500 11px/1 "IBM Plex Mono", monospace;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--hold); margin-bottom: 9px;
+  }
+  figure.shot.empty .ph span { font-size: 13.5px; color: var(--ink-2); font-weight: 300; }
+
+  details { border-top: 1px solid var(--rule); }
+  summary {
+    cursor: pointer; list-style: none; padding: 13px 0;
+    font: 500 11px/1 "IBM Plex Mono", monospace; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--muted);
+  }
   summary::-webkit-details-marker { display: none; }
-  summary::before { content: "▸ "; }
-  details[open] summary::before { content: "▾ "; }
-  summary:hover { color: var(--correct); }
-  details p { padding: 0 62px; font-size: 14px; color: var(--muted); max-width: 68ch; }
-  @media (max-width: 620px) { details p { padding: 0 22px; } }
-  a { color: var(--correct); }
+  summary::before { content: "+  "; }
+  details[open] summary::before { content: "−  "; }
+  summary:hover { color: var(--ink); }
+  details p { font-size: 14.5px; color: var(--muted); max-width: 66ch; padding-bottom: 14px; }
   svg { display: block; max-width: 100%; height: auto; }
-  .cap { font-size: 12.5px; color: var(--muted); margin-top: 10px; }
 </style>
 
 <main>
 
 <section class="slide">
   <div class="n">01</div>
-  <h1>The answer this data gives you is 24× too big</h1>
-  <p class="sub">Building a production data pipeline on Google Cloud — and the reason
-  it needed to exist.</p>
+  <h1>The answer this data gives you is 24&times; too big</h1>
+  <p class="lede">A production data pipeline on Google Cloud, and the reason it had to exist.</p>
   <div class="spacer"></div>
-  <p style="font-size:13.5px;color:var(--muted)">Sai Teja Sunku · data engineering case study</p>
+  <p class="fine">Sai Teja Sunku &middot; data engineering case study</p>
 </section>
-<details><summary>Speaker notes</summary>
-<p>Open on the number. Don't explain the dataset yet — the audience doesn't need to know or care what it is. The claim is that a reasonable-looking query on real public data returns something 24 times wrong, and everything after this earns that.</p></details>
+<details><summary>Notes</summary>
+<p>Open on the number, not the architecture. Don't explain the dataset — the audience doesn't need to know what it is. The claim is that a reasonable query on real public data returns something 24 times wrong, and the rest of the deck earns that.</p></details>
 
 <section class="slide">
-  <div class="n">02 · Setup</div>
+  <div class="n">02 &middot; Setup</div>
   <h2>I picked a public dataset at random</h2>
-  <p>UK government statistics. A free API, no key, seventeen tidy columns,
-  fifty thousand rows. The kind of thing that looks like an afternoon's work.</p>
-  <p>Before writing any pipeline code, I profiled it. <strong>It was lying in four
-  different ways</strong> — none of which show up in the schema, and none of which
-  cause an error.</p>
+  <p>Government statistics. Free API, no key, seventeen tidy columns, fifty thousand rows.
+  The kind of thing that looks like an afternoon's work.</p>
+  <p>Before writing any pipeline code, I profiled it. <strong>It was wrong in four
+  different ways</strong> — none visible in the schema, none of which raise an error.</p>
   <div class="spacer"></div>
-  <p style="font-size:13.5px;color:var(--muted)">The dataset is incidental. The failure modes
-  are not — they appear in most real-world source data.</p>
+  <p class="fine">The dataset is incidental. The failure modes are not — they turn up in most
+  real source data.</p>
 </section>
-<details><summary>Speaker notes</summary>
-<p>Say explicitly that the dataset was chosen arbitrarily and that no domain knowledge is needed. What's being demonstrated is the method: profile before you build, and design for what you find.</p></details>
+<details><summary>Notes</summary>
+<p>Say plainly that the dataset was arbitrary and no domain knowledge is needed. What's being shown is the method: profile before you build, then design for what you find.</p></details>
 
 <section class="slide">
-  <div class="n">03 · The problem</div>
-  <h2>One <code>SUM</code>. Three answers.</h2>
-  <div class="wrap">
+  <div class="n">03 &middot; The problem</div>
+  <div class="hero">24&times;</div>
+  <p class="hero-k">The gap between the obvious query and the truth.</p>
+  <div class="wrap" style="margin-top:52px">
     <table>
-      <thead><tr><th>Query</th><th>Result</th></tr></thead>
+      <thead><tr><th>Query</th><th>Starts</th></tr></thead>
       <tbody>
-        <tr class="bad"><td>The obvious one — <code>SUM</code> over every row</td><td class="num">8,484,310</td></tr>
-        <tr class="ok"><td>Correct: only rows at the true detail level</td><td class="num">353,500</td></tr>
-        <tr class="ok"><td>The publisher's own stated total</td><td class="num">353,500</td></tr>
+        <tr><td>The obvious one — sum every row</td><td class="num wrong">8,484,310</td></tr>
+        <tr><td>Only rows at the true detail level</td><td class="num right">353,500</td></tr>
+        <tr><td>The publisher's own stated total</td><td class="num right">353,500</td></tr>
       </tbody>
     </table>
   </div>
-  <p style="margin-top:22px">Four-fifths of the rows are subtotals mixed in with the detail.
-  The obvious query counts the same records once for every subtotal they appear in.</p>
-  <p><strong>It doesn't error. It returns fast. The number looks plausible.</strong></p>
-  <div class="shot">
-    <div class="lab">Screenshot 1</div>
-    <p>BigQuery console — the query returning all three figures side by side.</p>
-  </div>
+  <p style="margin-top:26px">Four-fifths of the rows are subtotals mixed in with the detail, so the
+  obvious query counts the same records once for every subtotal they sit in.
+  <strong>It doesn't error. It's fast. The number looks plausible.</strong></p>
+  <figure class="shot">
+    <img src="images/01-query-24x.png" alt="BigQuery console showing all three totals" onerror="this.closest('figure').classList.add('empty')">
+    <div class="ph"><b>Screenshot 1</b><span>BigQuery console — the query returning all three figures.</span></div>
+    <figcaption>All three totals, from the same table, in one query.</figcaption>
+  </figure>
 </section>
-<details><summary>Speaker notes</summary>
-<p>The silent failure is the point. Nothing warns you. This is the case for modelling the grain explicitly and testing it, rather than trusting that a query which runs is a query which is right.</p></details>
+<details><summary>Notes</summary>
+<p>The silent failure is the point — nothing warns you. This is the argument for modelling the grain explicitly and testing it, rather than trusting that a query which runs is a query which is right.</p></details>
 
 <section class="slide">
-  <div class="n">04 · The problem</div>
+  <div class="n">04 &middot; The problem</div>
   <h2>And three more like it</h2>
   <ul>
-    <li><strong>The numbers aren't numbers.</strong> Up to a quarter of the values are
-    withheld for privacy, encoded as text inside the numeric columns. Cast them naively
-    and they vanish; fill them with zero and you've invented data.</li>
-    <li><strong>History gets rewritten.</strong> The publisher has issued six versions,
-    quietly restating figures in each. Any analysis pinned to one download is wrong the
-    moment the next lands.</li>
+    <li><strong>The numbers aren't numbers.</strong> Up to a quarter of values are withheld
+    for privacy and encoded as text inside the numeric columns. Cast them naively and they
+    vanish; fill them with zero and you've invented data.</li>
+    <li><strong>History gets rewritten.</strong> Six versions published so far, each quietly
+    restating earlier figures. Any analysis pinned to one download is wrong when the next lands.</li>
     <li><strong>Everything is rounded.</strong> Every published figure is a multiple of ten,
     so the parts can never exactly equal the whole.</li>
   </ul>
   <div class="spacer"></div>
-  <p style="font-size:13.5px;color:var(--muted)">Each one silently corrupts a result rather
-  than failing loudly. That is what the pipeline is built to prevent.</p>
+  <p class="fine">Each corrupts a result quietly rather than failing loudly.</p>
 </section>
-<details><summary>Speaker notes</summary>
-<p>Keep this brisk — it's a list, not a deep dive. The audience only needs to accept that the data is genuinely hostile before seeing the architecture.</p></details>
+<details><summary>Notes</summary>
+<p>Keep this brisk — a list, not a deep dive. The audience only needs to accept the data is genuinely hostile before seeing the architecture.</p></details>
 
 <section class="slide">
-  <div class="n">05 · The build</div>
+  <div class="n">05 &middot; The build</div>
   <h2>Architecture</h2>
   <div class="wrap">
-  <svg viewBox="0 0 880 200" role="img" aria-label="Scheduler triggers a workflow, which runs a version watcher, then extract to cloud storage, then dbt transform into BigQuery">
+  <svg viewBox="0 0 860 168" role="img" aria-label="Scheduler triggers a workflow which checks the source, extracts to raw storage, then transforms into the warehouse">
     <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
-      <path d="M0,1 L7,4 L0,7" fill="none" stroke="currentColor" stroke-width="1.3"/></marker></defs>
+      <path d="M0,1 L7,4 L0,7" fill="none" stroke="currentColor" stroke-width="1.2"/></marker></defs>
     <g font-family="IBM Plex Mono, monospace" font-size="11" fill="currentColor" color="currentColor">
-      <g stroke="currentColor" stroke-width="1.1" fill="none" opacity=".4" marker-end="url(#a)">
-        <path d="M92,44 L92,68"/><path d="M156,116 L206,116"/>
-        <path d="M320,116 L370,116"/><path d="M484,116 L534,116"/><path d="M648,116 L698,116"/>
+      <g stroke="currentColor" stroke-width="1" fill="none" opacity=".35" marker-end="url(#a)">
+        <path d="M84,40 L84,62"/><path d="M150,110 L198,110"/>
+        <path d="M310,110 L358,110"/><path d="M470,110 L518,110"/><path d="M630,110 L678,110"/>
       </g>
-      <g fill="none" stroke="currentColor" stroke-width="1.2" opacity=".8">
-        <rect x="24" y="16" width="136" height="28" rx="2"/>
-        <rect x="24" y="68" width="132" height="40" rx="2"/>
-        <rect x="206" y="96" width="114" height="40" rx="2"/>
-        <rect x="370" y="96" width="114" height="40" rx="2"/>
-        <rect x="534" y="96" width="114" height="40" rx="2"/>
-        <rect x="698" y="96" width="150" height="40" rx="2"/>
+      <g fill="none" stroke="currentColor" stroke-width="1" opacity=".55">
+        <rect x="20" y="14" width="128" height="26"/>
+        <rect x="20" y="62" width="130" height="36"/>
+        <rect x="198" y="92" width="112" height="36"/>
+        <rect x="358" y="92" width="112" height="36"/>
+        <rect x="518" y="92" width="112" height="36"/>
+        <rect x="678" y="92" width="152" height="36"/>
       </g>
-      <text x="92" y="34" text-anchor="middle">Scheduler</text>
-      <text x="90" y="85" text-anchor="middle">Workflows</text>
-      <text x="90" y="99" text-anchor="middle" opacity=".55">orchestration</text>
-      <text x="263" y="113" text-anchor="middle">check source</text>
-      <text x="263" y="127" text-anchor="middle" opacity=".55">Cloud Run</text>
-      <text x="427" y="113" text-anchor="middle">extract</text>
-      <text x="427" y="127" text-anchor="middle" opacity=".55">Cloud Run</text>
-      <text x="591" y="113" text-anchor="middle">raw storage</text>
-      <text x="591" y="127" text-anchor="middle" opacity=".55">immutable</text>
-      <text x="773" y="113" text-anchor="middle">transform → BigQuery</text>
-      <text x="773" y="127" text-anchor="middle" opacity=".55">dbt, on Cloud Run</text>
-      <text x="24" y="178" opacity=".65">All infrastructure defined in Terraform · 33 resources · rebuilt from scratch in ~4 minutes</text>
+      <text x="84" y="31" text-anchor="middle">Scheduler</text>
+      <text x="85" y="78" text-anchor="middle">Workflows</text>
+      <text x="85" y="92" text-anchor="middle" opacity=".5">orchestration</text>
+      <text x="254" y="108" text-anchor="middle">check source</text>
+      <text x="254" y="121" text-anchor="middle" opacity=".5">Cloud Run</text>
+      <text x="414" y="108" text-anchor="middle">extract</text>
+      <text x="414" y="121" text-anchor="middle" opacity=".5">Cloud Run</text>
+      <text x="574" y="108" text-anchor="middle">raw storage</text>
+      <text x="574" y="121" text-anchor="middle" opacity=".5">immutable</text>
+      <text x="754" y="108" text-anchor="middle">warehouse</text>
+      <text x="754" y="121" text-anchor="middle" opacity=".5">transformed, tested</text>
+      <text x="20" y="158" opacity=".55">All infrastructure defined as code &middot; rebuilt from nothing in about four minutes</text>
     </g>
   </svg>
   </div>
-  <p style="margin-top:24px">Raw data lands untouched and is never modified. Everything
-  downstream is rebuilt from it, so any past state can be reproduced.</p>
-  <div class="shot">
-    <div class="lab">Screenshot 2</div>
-    <p>Terminal — <code>terraform plan</code>, showing the resource count.</p>
-  </div>
+  <p style="margin-top:32px">Raw data lands untouched and is never modified. Everything downstream
+  is rebuilt from it, so any past state can be reproduced exactly.</p>
+  <figure class="shot">
+    <img src="images/02-terraform-plan.png" alt="Terraform plan output" onerror="this.closest('figure').classList.add('empty')">
+    <div class="ph"><b>Screenshot 2</b><span>Terminal — <code>terraform plan</code> with the resource-count line.</span></div>
+    <figcaption>The whole platform, defined as code and reviewed before it is applied.</figcaption>
+  </figure>
 </section>
-<details><summary>Speaker notes</summary>
-<p>Nothing here was clicked into existence in a console. If asked whether it could be rebuilt: yes, in about four minutes, and that's the difference between a demo and something operable.</p></details>
+<details><summary>Notes</summary>
+<p>Nothing here was clicked into existence in a console. If asked whether it could be rebuilt: yes, in about four minutes — the difference between a demo and something operable.</p></details>
 
 <section class="slide">
-  <div class="n">06 · The build</div>
-  <h2>Where the problems get handled</h2>
+  <div class="n">06 &middot; The build</div>
+  <h2>Where each problem gets handled</h2>
   <div class="wrap">
     <table>
-      <thead><tr><th>Problem</th><th>How the pipeline handles it</th></tr></thead>
+      <thead><tr><th>Problem</th><th>Handling</th></tr></thead>
       <tbody>
-        <tr><td>Subtotals mixed with detail</td><td>Every row tagged with its aggregation level; the published views are pre-filtered so the wrong answer isn't reachable</td></tr>
-        <tr><td>Withheld values as text</td><td>Split into a number and a reason — never zero-filled</td></tr>
-        <tr><td>Rewritten history</td><td>All six versions retained; the warehouse can answer "what did they report in January?"</td></tr>
-        <tr><td>Rounding</td><td>Reconciliation tests use a tolerance derived from the rounding, not an invented fudge factor</td></tr>
+        <tr><td>Subtotals mixed with detail</td><td style="text-align:left">Every row tagged with its level; published views pre-filtered so the wrong answer isn't reachable</td></tr>
+        <tr><td>Withheld values as text</td><td style="text-align:left">Split into a number and a reason — never zero-filled</td></tr>
+        <tr><td>Rewritten history</td><td style="text-align:left">All six versions kept; the warehouse can answer what was reported at any past point</td></tr>
+        <tr><td>Rounding</td><td style="text-align:left">Reconciliation uses a tolerance derived from the rounding, not an invented fudge factor</td></tr>
       </tbody>
     </table>
   </div>
-  <div class="shot">
-    <div class="lab">Screenshots 3 &amp; 4</div>
-    <p>BigQuery — the three data layers in the console, and the withheld-value breakdown.</p>
-  </div>
+  <figure class="shot">
+    <img src="images/04-bigquery-datasets.png" alt="BigQuery console showing the data layers" onerror="this.closest('figure').classList.add('empty')">
+    <div class="ph"><b>Screenshot 4</b><span>BigQuery — the three data layers in the console.</span></div>
+    <figcaption>Raw, cleaned, and published layers, each rebuildable from the one before.</figcaption>
+  </figure>
 </section>
-<details><summary>Speaker notes</summary>
-<p>The key design idea: the correct answer is the easy one. A consumer of the published views can't reproduce the 24× error by accident, because the guardrail lives in the model rather than in the analyst's discipline.</p></details>
+<details><summary>Notes</summary>
+<p>The key idea: the correct answer is the easy one. A consumer of the published views can't reproduce the 24× error by accident, because the guardrail lives in the model rather than in the analyst's discipline.</p></details>
 
 <section class="slide">
-  <div class="n">07 · The build</div>
+  <div class="n">07 &middot; The build</div>
   <h2>It only runs when there's work</h2>
-  <p>The source updates roughly quarterly. A daily pipeline would redo identical
-  work about ninety times per release.</p>
-  <p>Instead a small job checks whether anything actually changed, and the workflow
-  branches on the answer.</p>
-  <div class="wrap" style="margin-top:12px">
+  <p>The source updates roughly quarterly. A daily pipeline would redo identical work about
+  ninety times per release. Instead a small job checks whether anything changed, and the
+  workflow branches on the answer.</p>
+  <div class="wrap" style="margin-top:14px">
     <table>
       <thead><tr><th>Verified live</th><th>Outcome</th><th>Time</th></tr></thead>
       <tbody>
-        <tr class="ok"><td>New version available</td><td>full extract and rebuild</td><td class="num">~2 min</td></tr>
-        <tr class="ok"><td>Nothing changed</td><td>skipped, no cost</td><td class="num">37 s</td></tr>
+        <tr><td>New version available</td><td style="text-align:left">full extract and rebuild</td><td class="num right">2 min</td></tr>
+        <tr><td>Nothing changed</td><td style="text-align:left">skipped, no cost</td><td class="num right">37 s</td></tr>
       </tbody>
     </table>
   </div>
-  <div class="shot">
-    <div class="lab">Screenshots 5 &amp; 6</div>
-    <p>The workflow execution graph (all green), and the transform job log showing all tests passing.</p>
-  </div>
+  <figure class="shot">
+    <img src="images/05-workflow-graph.png" alt="Workflow execution graph, all steps succeeded" onerror="this.closest('figure').classList.add('empty')">
+    <div class="ph"><b>Screenshot 5</b><span>Workflows — an execution graph, all steps green.</span></div>
+    <figcaption>Both paths were run for real, not described.</figcaption>
+  </figure>
 </section>
-<details><summary>Speaker notes</summary>
-<p>Both paths were run for real, not described. If Airflow comes up: it's the more familiar answer, but it has no free tier and this workload is quarterly — the same branching is a few lines here for effectively nothing.</p></details>
+<details><summary>Notes</summary>
+<p>If the usual orchestrator comes up: it's the more familiar answer but has no free tier, and this workload is quarterly. The same branching is a few lines here for effectively nothing.</p></details>
 
 <section class="slide">
-  <div class="n">08 · Rigour</div>
+  <div class="n">08 &middot; Rigour</div>
   <h2>The bug the tests caught</h2>
-  <p>Twenty-six automated tests run with every build. One of them earned its
-  place during this project.</p>
+  <p>Twenty-six automated tests run with every build. One earned its place during this project.</p>
   <p>After an unrelated change I re-ran the pipeline to confirm nothing had broken.
-  <strong>A test failed.</strong> The date had rolled over between runs, and because raw
-  data is never overwritten, the same source version had been stored twice — so every
-  figure was being counted twice downstream.</p>
-  <div class="figs" style="margin-top:26px">
-    <div class="fig"><div class="v bad">102,596</div><div class="k">rows seen downstream — doubled</div></div>
-    <div class="fig"><div class="v ok">51,298</div><div class="k">after the fix — correct</div></div>
+  <strong>A test failed.</strong> The date had rolled over between runs, and because raw data is
+  never overwritten, the same source version had been stored twice — so every figure was being
+  counted twice downstream.</p>
+  <div class="figs" style="margin-top:38px">
+    <div class="fig"><div class="v wrong">102,596</div><div class="k">rows seen downstream — doubled</div></div>
+    <div class="fig"><div class="v right">51,298</div><div class="k">after the fix — correct</div></div>
   </div>
-  <p style="margin-top:24px"><strong>The test stopped the run before anything reached the
+  <p style="margin-top:38px"><strong>The test stopped the run before anything reached the
   published layer.</strong></p>
+  <figure class="shot">
+    <img src="images/06-transform-logs.png" alt="Transform job log showing all tests passing" onerror="this.closest('figure').classList.add('empty')">
+    <div class="ph"><b>Screenshot 6</b><span>Cloud Run — transform log showing all 26 tests passing.</span></div>
+    <figcaption>Models and tests run together, so a failure blocks publication.</figcaption>
+  </figure>
 </section>
-<details><summary>Speaker notes</summary>
-<p>The strongest slide — don't rush it. A latent bug that only appears when a date changes, caught automatically, in production, on its first real occurrence. It's evidence the tests aren't decorative. Worth noting it surfaced only because the earlier change was verified rather than assumed.</p></details>
+<details><summary>Notes</summary>
+<p>The strongest slide — don't rush it. A latent bug that only appears when a date changes, caught automatically, in production, on its first real occurrence. Evidence the tests aren't decorative. It surfaced only because the earlier change was verified rather than assumed.</p></details>
 
 <section class="slide">
-  <div class="n">09 · Governance</div>
+  <div class="n">09 &middot; Governance</div>
   <h2>Compliance checked, not claimed</h2>
-  <p>A script verifies eighteen controls against the live cloud environment and
-  fails the build if any regress — data location, public exposure, credentials,
-  access scope, retention, privacy, audit trail.</p>
+  <p>A script verifies eighteen controls against the live environment and fails the build if any
+  regress — data location, public exposure, credentials, access scope, retention, privacy,
+  audit trail.</p>
   <p>It found two real problems:</p>
-  <ul style="margin-top:14px">
-    <li><strong>Data was leaving the country.</strong> The build tool silently staged
-    source files in a US region, against a UK-only requirement.</li>
-    <li><strong>An over-privileged default account.</strong> Cloud providers grant broad
-    write access to a default identity — and the build was using it. Revoking it naively
-    would have broken the pipeline; the fix was a purpose-built identity.</li>
+  <ul style="margin-top:18px">
+    <li><strong>Data was leaving the country.</strong> The build tool silently staged source
+    files in a US region, against a UK-only requirement.</li>
+    <li><strong>An over-privileged default account.</strong> The cloud provider grants broad
+    write access to a default identity, and the build was using it. Revoking it naively would
+    have broken the pipeline; the fix was a purpose-built identity.</li>
   </ul>
-  <div class="shot">
-    <div class="lab">Screenshot 7</div>
-    <p>Terminal — the verification script, ending <code>18 passed, 0 failed</code>.</p>
-  </div>
+  <figure class="shot">
+    <img src="images/07-compliance.png" alt="Compliance script output, eighteen passed" onerror="this.closest('figure').classList.add('empty')">
+    <div class="ph"><b>Screenshot 7</b><span>Terminal — the verification script ending <code>18 passed, 0 failed</code>.</span></div>
+    <figcaption>Eighteen controls, verified against live infrastructure on every run.</figcaption>
+  </figure>
 </section>
-<details><summary>Speaker notes</summary>
+<details><summary>Notes</summary>
 <p>Both findings were invisible to a written policy and obvious to an automated check. The second is the better story: the obvious remediation would have broken the build, so knowing why the easy fix is wrong matters more than reporting a clean pass.</p></details>
 
 <section class="slide">
-  <div class="n">10 · Cost</div>
+  <div class="n">10 &middot; Cost</div>
   <h2>Nothing per month</h2>
-  <div class="figs" style="margin-top:8px">
-    <div class="fig"><div class="v ok">£0</div><div class="k">running cost, entirely within free tiers</div></div>
-    <div class="fig"><div class="v bad">£250–400</div><div class="k">what the conventional orchestrator would have added</div></div>
+  <div class="figs" style="margin-top:12px">
+    <div class="fig"><div class="v right">&pound;0</div><div class="k">running cost, entirely within free tiers</div></div>
+    <div class="fig"><div class="v wrong">&pound;250&ndash;400</div><div class="k">what the conventional orchestrator would have added</div></div>
   </div>
-  <p style="margin-top:32px">The constraint improved the design. Because the usual
-  always-on scheduler was unaffordable, the pipeline became event-driven — which is
-  the better fit for a source that updates four times a year anyway.</p>
-  <div class="shot">
-    <div class="lab">Screenshot 8</div>
-    <p>Billing page showing current spend against the budget.</p>
-  </div>
+  <p style="margin-top:44px">The constraint improved the design. Because the usual always-on
+  scheduler was unaffordable, the pipeline became event-driven — which is the better fit for a
+  source that updates four times a year anyway.</p>
+  <figure class="shot">
+    <img src="images/08-billing.png" alt="Billing report showing spend against budget" onerror="this.closest('figure').classList.add('empty')">
+    <div class="ph"><b>Screenshot 8</b><span>Billing — current spend against the budget.</span></div>
+    <figcaption>Budget alerts were set before any resource was created.</figcaption>
+  </figure>
 </section>
-<details><summary>Speaker notes</summary>
+<details><summary>Notes</summary>
 <p>Frame the constraint as a design input, not a compromise. Choosing the cheaper right tool over the more impressive one is the judgement being demonstrated.</p></details>
 
 <section class="slide">
-  <div class="n">11 · Payoff</div>
+  <div class="n">11 &middot; Payoff</div>
   <h2>What the data actually showed</h2>
-  <p class="cap" style="margin:0 0 18px">Once it could be trusted — the composition of the market inverted over eight years.</p>
+  <p class="fine" style="margin-bottom:26px">Once it could be trusted, the composition of the
+  market had inverted over eight years.</p>
   <div class="wrap">
-  <svg viewBox="0 0 860 250" role="img" aria-label="Entry-level share falls from 43 percent to 17 percent while advanced-level rises from 13 percent to 41 percent, crossing around the midpoint">
+  <svg viewBox="0 0 840 240" role="img" aria-label="Entry level share falls from 43 percent to 17 percent while advanced level rises from 13 percent to 41 percent, the two lines crossing near the midpoint">
     <g font-family="IBM Plex Mono, monospace" font-size="11">
-      <g stroke="var(--rule-2)" stroke-width="1">
-        <line x1="46" y1="26" x2="830" y2="26"/><line x1="46" y1="86" x2="830" y2="86"/>
-        <line x1="46" y1="146" x2="830" y2="146"/><line x1="46" y1="196" x2="830" y2="196"/>
+      <g stroke="var(--rule)" stroke-width="1">
+        <line x1="44" y1="24" x2="812" y2="24"/><line x1="44" y1="188" x2="812" y2="188"/>
       </g>
       <g fill="var(--muted)" text-anchor="end">
-        <text x="38" y="30">50%</text><text x="38" y="90">33%</text>
-        <text x="38" y="150">17%</text><text x="38" y="200">0%</text>
+        <text x="36" y="28">50%</text><text x="36" y="192">0%</text>
       </g>
       <g fill="var(--muted)" text-anchor="middle">
-        <text x="46" y="220">2017</text><text x="438" y="220">2021</text><text x="830" y="220">2025</text>
+        <text x="44" y="212">2017</text><text x="428" y="212">2021</text><text x="812" y="212">2025</text>
       </g>
-      <polyline fill="none" stroke="var(--trap)" stroke-width="2.4"
-        points="46,52 144,78 242,98 340,114 438,114 536,126 634,130 732,138 830,142"/>
-      <polyline fill="none" stroke="var(--correct)" stroke-width="2.4"
-        points="46,158 144,136 242,114 340,97 438,98 536,88 634,80 732,67 830,64"/>
-      <g stroke-width="2.2" fill="var(--panel)">
-        <circle cx="830" cy="142" r="4.5" stroke="var(--trap)"/>
-        <circle cx="830" cy="64"  r="4.5" stroke="var(--correct)"/>
+      <polyline fill="none" stroke="var(--wrong)" stroke-width="2.4"
+        points="44,47 140,73 236,93 332,109 428,109 524,121 620,125 716,133 812,137"/>
+      <polyline fill="none" stroke="var(--right)" stroke-width="2.4"
+        points="44,152 140,130 236,109 332,92 428,93 524,83 620,75 716,62 812,59"/>
+      <g stroke-width="2.4" fill="var(--bg)">
+        <circle cx="812" cy="137" r="4.5" stroke="var(--wrong)"/>
+        <circle cx="812" cy="59"  r="4.5" stroke="var(--right)"/>
       </g>
       <g font-size="12" font-weight="500">
-        <text x="58" y="44"  fill="var(--trap)">Entry level  43%</text>
-        <text x="58" y="174" fill="var(--correct)">Advanced level  13%</text>
-        <text x="818" y="136" fill="var(--trap)" text-anchor="end">17%</text>
-        <text x="818" y="56"  fill="var(--correct)" text-anchor="end">41%</text>
+        <text x="56" y="40"  fill="var(--wrong)">Entry level 43%</text>
+        <text x="56" y="168" fill="var(--right)">Advanced level 13%</text>
+        <text x="800" y="131" fill="var(--wrong)" text-anchor="end">17%</text>
+        <text x="800" y="51"  fill="var(--right)" text-anchor="end">41%</text>
       </g>
     </g>
   </svg>
   </div>
-  <p style="margin-top:20px">Total volume barely moved. <strong>The mix inverted.</strong>
-  Anyone watching headline numbers alone would conclude the market was flat and stable.</p>
+  <p style="margin-top:30px">Total volume barely moved. <strong>The mix inverted.</strong>
+  Anyone watching headline numbers alone would have concluded the market was flat and stable.</p>
 </section>
-<details><summary>Speaker notes</summary>
-<p>This is the argument for the whole build: the interesting finding was invisible in the headline figures and only became visible once the data could be trusted at detail level. Mention the regional spread if there's time — the shift is national but London moved half again as far as the slowest region.</p></details>
+<details><summary>Notes</summary>
+<p>This is the argument for the whole build: the finding was invisible in headline figures and only appeared once the data could be trusted at detail level. Mention the regional spread if there's time — the shift is national, but the fastest region moved half again as far as the slowest.</p></details>
 
 <section class="slide">
   <div class="n">12</div>
   <h1>Built for data that lies</h1>
-  <div class="figs" style="margin-top:38px">
-    <div class="fig"><div class="v ok">33</div><div class="k">resources, all as code</div></div>
-    <div class="fig"><div class="v ok">26</div><div class="k">tests gating every publish</div></div>
-    <div class="fig"><div class="v ok">18</div><div class="k">compliance checks</div></div>
-    <div class="fig"><div class="v ok">£0</div><div class="k">per month</div></div>
+  <div class="figs" style="margin-top:56px">
+    <div class="fig"><div class="v right">33</div><div class="k">resources, all as code</div></div>
+    <div class="fig"><div class="v right">26</div><div class="k">tests gating every publish</div></div>
+    <div class="fig"><div class="v right">18</div><div class="k">compliance checks</div></div>
+    <div class="fig"><div class="v right">&pound;0</div><div class="k">per month</div></div>
   </div>
   <div class="spacer"></div>
-  <p style="font-size:12.5px;color:var(--muted);max-width:76ch">Contains public sector
-  information licensed under the Open Government Licence v3.0. Source: UK Department for
-  Education, Explore Education Statistics.</p>
+  <p class="fine" style="max-width:74ch">Contains public sector information licensed under the
+  Open Government Licence v3.0. Source: UK Department for Education, Explore Education Statistics.</p>
 </section>
-<details><summary>Speaker notes</summary>
+<details><summary>Notes</summary>
 <p>Close on the traps, not the tooling. Anyone can wire cloud services together; the value was noticing the data was wrong in four ways and building something that doesn't repeat the error.</p></details>
 
 </main>
