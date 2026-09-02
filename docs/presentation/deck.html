@@ -1,0 +1,779 @@
+<title>The 24x Answer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --paper:   #f2f4f3;
+    --panel:   #fbfcfb;
+    --ink:     #12171a;
+    --ink-2:   #3c4744;
+    --muted:   #6b7572;
+    --rule:    #dbe0dd;
+    --rule-2:  #eaeeec;
+    --correct: #12695d;
+    --trap:    #a3371f;
+    --amber:   #8a6410;
+    --correct-wash: #12695d14;
+    --trap-wash:    #a3371f14;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --paper:   #0e1213;
+      --panel:   #161b1c;
+      --ink:     #eef2f0;
+      --ink-2:   #c2cbc8;
+      --muted:   #8b9895;
+      --rule:    #2a3234;
+      --rule-2:  #1e2526;
+      --correct: #4fbfae;
+      --trap:    #e08a70;
+      --amber:   #d3a34a;
+      --correct-wash: #4fbfae1f;
+      --trap-wash:    #e08a701f;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --paper:   #0e1213;
+    --panel:   #161b1c;
+    --ink:     #eef2f0;
+    --ink-2:   #c2cbc8;
+    --muted:   #8b9895;
+    --rule:    #2a3234;
+    --rule-2:  #1e2526;
+    --correct: #4fbfae;
+    --trap:    #e08a70;
+    --amber:   #d3a34a;
+    --correct-wash: #4fbfae1f;
+    --trap-wash:    #e08a701f;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", ui-sans-serif, -apple-system, "Segoe UI", sans-serif;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .shell { display: grid; grid-template-columns: 210px minmax(0,1fr); gap: 0; }
+  @media (max-width: 1000px) { .shell { grid-template-columns: 1fr; } }
+
+  /* ---- index rail ---- */
+  nav.rail {
+    position: sticky; top: 0; align-self: start; height: 100vh;
+    overflow-y: auto; padding: 30px 18px 40px;
+    border-right: 1px solid var(--rule); background: var(--panel);
+  }
+  @media (max-width: 1000px) { nav.rail { display: none; } }
+  .rail h2 {
+    font: 500 10.5px/1 "IBM Plex Mono", monospace; letter-spacing: .13em;
+    text-transform: uppercase; color: var(--muted); margin: 0 0 14px;
+  }
+  .rail .act {
+    font: 500 10.5px/1 "IBM Plex Mono", monospace; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--correct);
+    margin: 20px 0 7px; padding-top: 12px; border-top: 1px solid var(--rule-2);
+  }
+  .rail .act:first-of-type { margin-top: 0; border-top: 0; padding-top: 0; }
+  .rail a {
+    display: flex; gap: 8px; text-decoration: none; color: var(--ink-2);
+    font-size: 12.5px; line-height: 1.35; padding: 3.5px 0;
+  }
+  .rail a:hover { color: var(--correct); }
+  .rail a b { font: 500 11px/1.5 "IBM Plex Mono", monospace; color: var(--muted); min-width: 16px; }
+  .rail a:focus-visible { outline: 2px solid var(--correct); outline-offset: 2px; border-radius: 2px; }
+
+  /* ---- slides ---- */
+  main { padding: 34px 30px 90px; max-width: 1080px; }
+  @media (max-width: 620px) { main { padding: 22px 16px 60px; } }
+
+  .slide {
+    background: var(--panel); border: 1px solid var(--rule); border-radius: 3px;
+    padding: 42px 46px; margin-bottom: 14px; min-height: 430px;
+    display: flex; flex-direction: column;
+  }
+  @media (max-width: 620px) { .slide { padding: 26px 20px; min-height: 0; } }
+
+  .snum {
+    font: 500 10.5px/1 "IBM Plex Mono", monospace; letter-spacing: .13em;
+    color: var(--muted); text-transform: uppercase; margin-bottom: 18px;
+    display: flex; justify-content: space-between; align-items: baseline;
+  }
+  .snum .act-tag { color: var(--correct); }
+
+  h1 {
+    font-family: Newsreader, Georgia, serif; font-weight: 500;
+    font-size: clamp(30px, 4.6vw, 50px); line-height: 1.08; letter-spacing: -.015em;
+    margin: 0 0 14px; text-wrap: balance;
+  }
+  h2 {
+    font-family: Newsreader, Georgia, serif; font-weight: 500;
+    font-size: clamp(23px, 3vw, 33px); line-height: 1.14; letter-spacing: -.012em;
+    margin: 0 0 12px; text-wrap: balance;
+  }
+  .lede { font-size: 16.5px; line-height: 1.55; color: var(--ink-2); max-width: 64ch; margin: 0 0 8px; }
+  p { font-size: 14.5px; line-height: 1.6; color: var(--ink-2); max-width: 68ch; }
+  strong { color: var(--ink); font-weight: 600; }
+
+  .kicker {
+    font-family: Newsreader, Georgia, serif; font-style: italic;
+    font-size: 18px; color: var(--muted); margin: 0 0 20px;
+  }
+
+  /* ---- data ---- */
+  .stat-row { display: flex; flex-wrap: wrap; gap: 34px; margin: 22px 0 6px; }
+  .stat .v {
+    font: 500 40px/1 "IBM Plex Mono", monospace; letter-spacing: -.03em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .v.trap { color: var(--trap); }
+  .stat .v.ok   { color: var(--correct); }
+  .stat .k { font-size: 12.5px; color: var(--muted); margin-top: 6px; max-width: 26ch; line-height: 1.4; }
+
+  .tbl-wrap { overflow-x: auto; margin: 16px 0 4px; }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
+  th, td { text-align: right; padding: 7px 12px; border-bottom: 1px solid var(--rule-2); font-variant-numeric: tabular-nums; }
+  th:first-child, td:first-child { text-align: left; }
+  thead th {
+    font: 500 10.5px/1 "IBM Plex Mono", monospace; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--rule);
+  }
+  td.num { font-family: "IBM Plex Mono", monospace; }
+  tr.hl td { background: var(--correct-wash); }
+  tr.bad td { background: var(--trap-wash); }
+
+  code, .mono { font-family: "IBM Plex Mono", monospace; font-size: .92em; }
+  .chip {
+    display: inline-block; padding: 2px 8px; border-radius: 2px;
+    font: 500 11px/1.7 "IBM Plex Mono", monospace; letter-spacing: .04em;
+  }
+  .chip.ok   { background: var(--correct-wash); color: var(--correct); }
+  .chip.bad  { background: var(--trap-wash);    color: var(--trap); }
+
+  ul.tight { margin: 12px 0 0; padding-left: 18px; }
+  ul.tight li { font-size: 14.5px; line-height: 1.62; color: var(--ink-2); margin-bottom: 7px; max-width: 66ch; }
+
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+  @media (max-width: 760px) { .two { grid-template-columns: 1fr; gap: 20px; } }
+
+  /* ---- screenshot slot ---- */
+  .shot {
+    border: 1.5px dashed var(--rule); border-radius: 3px; padding: 20px 22px;
+    margin: 18px 0 0; background: transparent;
+  }
+  .shot .lab {
+    font: 500 10.5px/1 "IBM Plex Mono", monospace; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--amber); margin-bottom: 9px;
+  }
+  .shot .what { font-size: 13.5px; color: var(--ink-2); line-height: 1.55; margin: 0 0 7px; }
+  .shot .where { font: 400 12px/1.5 "IBM Plex Mono", monospace; color: var(--muted); word-break: break-all; }
+
+  /* ---- notes ---- */
+  details.notes { margin: 0 0 30px; }
+  details.notes summary {
+    cursor: pointer; font: 500 10.5px/1 "IBM Plex Mono", monospace;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+    padding: 9px 46px; list-style: none;
+  }
+  @media (max-width: 620px) { details.notes summary { padding: 9px 20px; } }
+  details.notes summary::-webkit-details-marker { display: none; }
+  details.notes summary::before { content: "▸ "; }
+  details[open].notes summary::before { content: "▾ "; }
+  details.notes summary:hover { color: var(--correct); }
+  details.notes p { padding: 0 46px 4px; margin: 4px 0; font-size: 13.5px; color: var(--muted); max-width: 74ch; }
+  @media (max-width: 620px) { details.notes p { padding: 0 20px 4px; } }
+
+  svg { display: block; max-width: 100%; height: auto; }
+  .cap { font-size: 12px; color: var(--muted); margin-top: 8px; }
+  hr.rule { border: 0; border-top: 1px solid var(--rule-2); margin: 20px 0; }
+  .spacer { flex: 1; min-height: 8px; }
+</style>
+
+<div class="shell">
+<nav class="rail">
+  <h2>Contents</h2>
+  <div class="act">I · Problem</div>
+  <a href="#s1"><b>01</b><span>Title</span></a>
+  <a href="#s2"><b>02</b><span>Four traps</span></a>
+  <a href="#s3"><b>03</b><span>The 24× answer</span></a>
+  <div class="act">II · Pipeline</div>
+  <a href="#s4"><b>04</b><span>Architecture</span></a>
+  <a href="#s5"><b>05</b><span>Infrastructure as code</span></a>
+  <a href="#s6"><b>06</b><span>Bronze</span></a>
+  <a href="#s7"><b>07</b><span>Silver</span></a>
+  <a href="#s8"><b>08</b><span>Gold &amp; SCD-2</span></a>
+  <a href="#s9"><b>09</b><span>Orchestration</span></a>
+  <div class="act">III · Rigour</div>
+  <a href="#s10"><b>10</b><span>Tests</span></a>
+  <a href="#s11"><b>11</b><span>The bug they caught</span></a>
+  <a href="#s12"><b>12</b><span>Cost</span></a>
+  <div class="act">IV · Compliance</div>
+  <a href="#s13"><b>13</b><span>Compliance as code</span></a>
+  <a href="#s14"><b>14</b><span>Two findings</span></a>
+  <div class="act">V · Insight</div>
+  <a href="#s15"><b>15</b><span>Market moved up</span></a>
+  <a href="#s16"><b>16</b><span>Uneven by region</span></a>
+  <a href="#s17"><b>17</b><span>Three markets</span></a>
+  <a href="#s18"><b>18</b><span>What it can't answer</span></a>
+  <div class="act">Close</div>
+  <a href="#s19"><b>19</b><span>Differently</span></a>
+  <a href="#s20"><b>20</b><span>Summary</span></a>
+</nav>
+
+<main>
+
+<!-- 01 -->
+<section class="slide" id="s1">
+  <div class="snum"><span>01</span><span class="act-tag">Act I · The problem</span></div>
+  <h1>The answer this data gives you is 24× too big</h1>
+  <p class="lede">A production data platform on Google Cloud over the Department for Education's
+  apprenticeship statistics — and the four ways the source misleads anyone who trusts it.</p>
+  <div class="spacer"></div>
+  <div class="stat-row">
+    <div class="stat"><div class="v">51,298</div><div class="k">rows, latest version</div></div>
+    <div class="stat"><div class="v">9</div><div class="k">academic years</div></div>
+    <div class="stat"><div class="v">6</div><div class="k">published versions reconciled</div></div>
+    <div class="stat"><div class="v ok">26</div><div class="k">automated tests, all passing</div></div>
+    <div class="stat"><div class="v ok">£0</div><div class="k">monthly run cost</div></div>
+  </div>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>Open on the number, not the architecture. The 24× is the hook — it makes the engineering necessary rather than decorative. Say up front that the pipeline is the graded work and the analytics are the pay-off.</p></details>
+
+<!-- 02 -->
+<section class="slide" id="s2">
+  <div class="snum"><span>02</span><span class="act-tag">Act I · The problem</span></div>
+  <h2>Seventeen columns of government statistics. Four traps.</h2>
+  <p class="lede">Free API, no key, clean CSV. It looks like a afternoon's work.</p>
+  <div class="two" style="margin-top:18px">
+    <div>
+      <p><span class="chip bad">Trap 1</span> <strong>The numbers are not numbers.</strong>
+      Measure columns carry disclosure markers — <code>low</code>, <code>c</code>, <code>z</code>.
+      Up to 23% of counts are withheld. Cast naively and they become null; coalesce them and
+      you have invented zeros.</p>
+      <p><span class="chip bad">Trap 2</span> <strong>80% of rows are subtotals.</strong>
+      Every filter dimension carries its own <code>Total</code> member. Only 10,066 of 51,298
+      rows are true detail grain.</p>
+    </div>
+    <div>
+      <p><span class="chip bad">Trap 3</span> <strong>History gets rewritten.</strong>
+      Six published versions; rows added, removed <em>and</em> silently restated.
+      An analysis pinned to one download is wrong the moment the next lands.</p>
+      <p><span class="chip bad">Trap 4</span> <strong>Everything is rounded to 10.</strong>
+      All 42,045 published values are exact multiples of ten — so sums of parts
+      can never equal a published whole.</p>
+    </div>
+  </div>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>Land the point that none of these are documented in a way you'd catch by reading the schema. Each was found by profiling the data before writing a line of pipeline code. That order — profile first — is the actual lesson.</p></details>
+
+<!-- 03 -->
+<section class="slide" id="s3">
+  <div class="snum"><span>03</span><span class="act-tag">Act I · The problem</span></div>
+  <h2>What the obvious query returns</h2>
+  <p class="lede">England, 2024/25. One <code>SUM</code>, three answers.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Method</th><th>Total starts</th><th>Rows used</th></tr></thead>
+      <tbody>
+        <tr class="bad"><td>Naive <code>SUM(all rows)</code></td><td class="num">8,484,310</td><td class="num">576</td></tr>
+        <tr class="hl"><td>Detail grain only</td><td class="num">353,500</td><td class="num">126</td></tr>
+        <tr class="hl"><td>Publisher's own total</td><td class="num">353,500</td><td class="num">1</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:16px">England started roughly 353,500 apprenticeships that year. The naive query
+  reports <strong>8.5 million</strong> — more apprenticeships than the entire working population of Birmingham,
+  Manchester and Leeds combined. It returns a number, it returns it fast, and nothing errors.</p>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>Pause on the fact that the wrong query <em>succeeds</em>. No error, no warning, plausible-looking output. This is the case for tests and for modelling the grain explicitly — the failure mode is silent.</p></details>
+
+<!-- 04 -->
+<section class="slide" id="s4">
+  <div class="snum"><span>04</span><span class="act-tag">Act II · The pipeline</span></div>
+  <h2>Architecture</h2>
+  <p class="lede">Serverless, event-driven, entirely inside Google Cloud's always-free tier.</p>
+  <div class="tbl-wrap" style="margin-top:14px">
+  <svg viewBox="0 0 900 232" role="img" aria-label="Architecture: Scheduler triggers Workflows, which runs a version watcher, then extract into GCS bronze, then dbt transform into BigQuery silver and gold, consumed by Looker Studio and BigQuery ML">
+    <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,1 L7,4 L0,7" fill="none" stroke="currentColor" stroke-width="1.3"/></marker></defs>
+    <g font-family="IBM Plex Mono, monospace" font-size="10.5" fill="currentColor" color="currentColor">
+      <g stroke="currentColor" stroke-width="1.1" fill="none" opacity=".45" marker-end="url(#ar)">
+        <path d="M96,42 L96,64"/><path d="M96,102 L96,124"/>
+        <path d="M160,146 L214,146"/><path d="M330,146 L384,146"/>
+        <path d="M500,146 L554,146"/><path d="M670,146 L724,146"/>
+      </g>
+      <g fill="none" stroke="currentColor" stroke-width="1.2" opacity=".85">
+        <rect x="26" y="16" width="140" height="26" rx="2"/>
+        <rect x="26" y="64" width="140" height="38" rx="2"/>
+        <rect x="26" y="124" width="134" height="44" rx="2"/>
+        <rect x="214" y="124" width="116" height="44" rx="2"/>
+        <rect x="384" y="124" width="116" height="44" rx="2"/>
+        <rect x="554" y="124" width="116" height="44" rx="2"/>
+        <rect x="724" y="112" width="150" height="30" rx="2"/>
+        <rect x="724" y="150" width="150" height="30" rx="2"/>
+      </g>
+      <text x="96" y="33" text-anchor="middle">Cloud Scheduler</text>
+      <text x="96" y="80" text-anchor="middle">Cloud Workflows</text>
+      <text x="96" y="94" text-anchor="middle" opacity=".6">orchestration</text>
+      <text x="93" y="141" text-anchor="middle">version watcher</text>
+      <text x="93" y="156" text-anchor="middle" opacity=".6">Cloud Run</text>
+      <text x="272" y="141" text-anchor="middle">extract</text>
+      <text x="272" y="156" text-anchor="middle" opacity=".6">Cloud Run</text>
+      <text x="442" y="141" text-anchor="middle">GCS bronze</text>
+      <text x="442" y="156" text-anchor="middle" opacity=".6">immutable</text>
+      <text x="612" y="141" text-anchor="middle">dbt build</text>
+      <text x="612" y="156" text-anchor="middle" opacity=".6">Cloud Run</text>
+      <text x="799" y="131" text-anchor="middle">BigQuery silver → gold</text>
+      <text x="799" y="169" text-anchor="middle">Looker Studio · BQML</text>
+      <text x="26" y="208" opacity=".7">Terraform provisions all 33 resources · no Cloud Composer — no free tier, £250–400/month</text>
+    </g>
+  </svg>
+  </div>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>The Composer decision is worth defending out loud: Airflow is the CV-friendly answer, but it has no free tier and this workload runs quarterly. Cloud Workflows expresses the same DAG for effectively nothing. Choosing the cheaper right tool over the more impressive one is the point.</p></details>
+
+<!-- 05 -->
+<section class="slide" id="s5">
+  <div class="snum"><span>05</span><span class="act-tag">Act II · The pipeline</span></div>
+  <h2>Everything is code</h2>
+  <p class="lede">The whole platform builds from nothing with one command — buckets, datasets,
+  service accounts, IAM, jobs, workflow, schedule.</p>
+  <div class="shot">
+    <div class="lab">Screenshot 1 · Terraform</div>
+    <p class="what">Terminal showing <code>terraform plan</code> — the summary line
+    <code>Plan: 33 to add, 0 to change, 0 to destroy</code> must be visible.</p>
+    <div class="where">cd terraform &amp;&amp; terraform plan</div>
+  </div>
+  <p style="margin-top:16px">Reviewed as a plan, then applied. Nothing in this project was
+  clicked into existence in a console — which is why it can be torn down and rebuilt for a demo
+  without ceremony.</p>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>If asked "could you rebuild this?" the answer is yes, in about four minutes, and that's the difference between a portfolio project and something operable.</p></details>
+
+<!-- 06 -->
+<section class="slide" id="s6">
+  <div class="snum"><span>06</span><span class="act-tag">Act II · The pipeline</span></div>
+  <h2>Bronze: immutable and replayable</h2>
+  <p class="lede">Raw extracts land in Cloud Storage partitioned by source version and
+  extraction date, and are never modified.</p>
+  <ul class="tight">
+    <li>Every load writes a manifest with row count and SHA-256 — all six versions
+    reconcile <strong>exactly</strong> against the API's own reported totals.</li>
+    <li>Everything lands as <code>STRING</code> by design. Typing here would silently destroy
+    the suppression markers.</li>
+    <li>Hive partitioning means <code>version</code> and <code>ingest_date</code> become queryable
+    columns for free — derived from the object path, no ingestion code.</li>
+  </ul>
+  <div class="shot">
+    <div class="lab">Screenshot 2 · Cloud Storage</div>
+    <p class="what">Bucket browser showing the <code>version=</code> partition folders under
+    <code>apprenticeships/data/</code>.</p>
+    <div class="where">console.cloud.google.com/storage/browser/dfe-appr-bronze-dfe-apprenticeships-2026</div>
+  </div>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>Immutability isn't dogma here — it's what makes the restatement analysis in Act V possible at all. Keeping all six versions is why we can answer "what did they report in January?"</p></details>
+
+<!-- 07 -->
+<section class="slide" id="s7">
+  <div class="snum"><span>07</span><span class="act-tag">Act II · The pipeline</span></div>
+  <h2>Silver: where the traps get handled</h2>
+  <p class="lede">Each measure splits into a typed value and a status explaining any absence.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Raw value</th><th>Becomes</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td class="num">'1430'</td><td class="num">1430</td><td><span class="chip ok">published</span></td></tr>
+        <tr><td class="num">'low'</td><td class="num">NULL</td><td><span class="chip bad">suppressed_low</span></td></tr>
+        <tr><td class="num">'c'</td><td class="num">NULL</td><td><span class="chip bad">suppressed_confidential</span></td></tr>
+        <tr><td class="num">'z'</td><td class="num">NULL</td><td><span class="chip bad">not_applicable</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:14px">A suppressed figure is never zero — it is null <em>with a reason</em>.
+  Plus <code>aggregation_depth</code> (0–5), which is what lets every downstream model avoid
+  the 24× trap by construction rather than by discipline.</p>
+  <div class="shot">
+    <div class="lab">Screenshot 3 · BigQuery</div>
+    <p class="what">Query results showing the status breakdown per measure — 42,045 published
+    against 9,253 suppressed for <code>start_count</code>, and zero <code>unrecognised</code>.</p>
+    <div class="where">console.cloud.google.com/bigquery?project=dfe-apprenticeships-2026</div>
+  </div>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>The distributions match the pre-build profiling exactly, which is the evidence the transform did what was intended rather than something merely plausible.</p></details>
+
+<!-- 08 -->
+<section class="slide" id="s8">
+  <div class="snum"><span>08</span><span class="act-tag">Act II · The pipeline</span></div>
+  <h2>Gold: six versions, one history</h2>
+  <p class="lede">A type-2 slowly-changing fact collapses every published version into validity
+  intervals, so the warehouse answers "what did they report as of version X?"</p>
+  <div class="stat-row" style="gap:40px">
+    <div class="stat"><div class="v">69,589</div><div class="k">SCD-2 records from 58,092 distinct keys</div></div>
+    <div class="stat"><div class="v ok">51,298</div><div class="k">marked current — matches v2.0.2 exactly</div></div>
+    <div class="stat"><div class="v">18,291</div><div class="k">soft-deleted keys, history retained</div></div>
+  </div>
+  <hr class="rule">
+  <p><strong>The trap inside the trap.</strong> Between two versions the publisher reformatted
+  ~4,200 values — <code>'4'</code> became <code>'4.0'</code>. Same number, different text.
+  Comparing raw strings opens a spurious history record for every one:</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Comparison</th><th>Records produced</th></tr></thead>
+      <tbody>
+        <tr class="bad"><td>String-level diff</td><td class="num">73,797</td></tr>
+        <tr class="hl"><td>Typed diff (shipped)</td><td class="num">69,589</td></tr>
+        <tr><td><em>Phantom records avoided</em></td><td class="num"><strong>4,208</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="shot">
+    <div class="lab">Screenshot 4 · BigQuery</div>
+    <p class="what">Results of <code>sql/analysis/typed_vs_string_diff.sql</code> showing both counts side by side.</p>
+    <div class="where">sql/analysis/typed_vs_string_diff.sql</div>
+  </div>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>4,208 was predicted from profiling before the model was built, then reproduced exactly by the shipped model. That agreement is the strongest evidence in the deck that the modelling is correct rather than merely passing.</p></details>
+
+<!-- 09 -->
+<section class="slide" id="s9">
+  <div class="snum"><span>09</span><span class="act-tag">Act II · The pipeline</span></div>
+  <h2>It only works when there's work to do</h2>
+  <p class="lede">The source publishes roughly quarterly. A daily pipeline that reloaded
+  regardless would repeat identical work about ninety times per release.</p>
+  <p>A watcher polls the version endpoint and signals via exit code: <span class="chip ok">0 — new version</span>
+  <span class="chip bad">3 — no change</span>. The workflow branches on that, so a normal day costs one
+  API call and finishes in under a minute.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Verified in production</th><th>Result</th><th>Duration</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>New version present</td><td class="num">extract → dbt build → SUCCEEDED</td><td class="num">~2 min</td></tr>
+        <tr class="hl"><td>No change</td><td class="num">skipped_no_new_version</td><td class="num">37 s</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="shot">
+    <div class="lab">Screenshots 5 &amp; 6 · Workflows and Cloud Run</div>
+    <p class="what">(5) Workflow execution graph, all steps green, state SUCCEEDED.
+    (6) Transform job logs showing <code>PASS=26 WARN=0 ERROR=0</code>.</p>
+    <div class="where">console.cloud.google.com/workflows/workflow/europe-west2/dfe-appr-pipeline/executions</div>
+  </div>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>Both branches were run live, not simulated. If asked about Airflow, note the same branch is three lines of YAML here versus a Composer environment costing more per month than this entire platform costs per decade.</p></details>
+
+<!-- 10 -->
+<section class="slide" id="s10">
+  <div class="snum"><span>10</span><span class="act-tag">Act III · Rigour</span></div>
+  <h2>Twenty-six tests, two of which are opinions</h2>
+  <p class="lede">Most are structural — uniqueness, referential integrity, accepted values.
+  Two encode business judgement.</p>
+  <ul class="tight">
+    <li><strong>Current records must equal the latest published version.</strong> If the SCD-2
+    validity logic drifts by a single row, this fails immediately.</li>
+    <li><strong>Detail grain must reconcile to the publisher's own total within 0.1%.</strong>
+    Not equality — because everything is rounded to 10, summing ~122 rounded values can never
+    equal an independently rounded total. Expected error is about 5√n ≈ 55; observed is 0–90.
+    The tolerance is loose enough to absorb rounding and tight enough that a real aggregation
+    bug, which would be 24×, fails loudly.</li>
+  </ul>
+  <p style="margin-top:14px">Models and tests run together via <code>dbt build</code>, so a failing
+  test blocks publication to gold rather than reporting it afterwards.</p>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>The tolerance test is worth dwelling on: the naive instinct is to assert equality, watch it fail, and hardcode a fudge factor. Deriving the threshold from the rounding regime is the difference.</p></details>
+
+<!-- 11 -->
+<section class="slide" id="s11">
+  <div class="snum"><span>11</span><span class="act-tag">Act III · Rigour</span></div>
+  <h2>The bug the tests caught</h2>
+  <p class="lede">This one wasn't planned. It happened during this build, in production.</p>
+  <p>After a routine IAM change I re-ran the pipeline to confirm nothing had broken.
+  It failed — but not on permissions. A uniqueness test failed.</p>
+  <p><strong>The calendar date had rolled over between runs.</strong> Bronze is append-only, so
+  re-extracting the same version landed a second <code>ingest_date</code> partition beside the
+  first — and the external table reads every partition. Silver was seeing all 51,298 rows twice.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Layer</th><th>Rows for v2.0.2</th><th></th></tr></thead>
+      <tbody>
+        <tr class="bad"><td>Bronze (all partitions)</td><td class="num">102,596</td><td>duplicated</td></tr>
+        <tr class="hl"><td>Silver, after fix</td><td class="num">51,298</td><td>resolved to latest extraction</td></tr>
+        <tr class="hl"><td>Gold, current</td><td class="num">51,298</td><td>correct</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:14px">The test <strong>stopped the run before anything reached gold</strong>.
+  A latent idempotency bug that only surfaces when a date changes, caught by the safety net,
+  in production, on its first real occurrence.</p>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>This is the strongest slide in the deck — don't rush it. It's evidence the tests aren't decorative. Note also that it was only found because the IAM change was verified rather than assumed; the discipline found the bug, not luck.</p></details>
+
+<!-- 12 -->
+<section class="slide" id="s12">
+  <div class="snum"><span>12</span><span class="act-tag">Act III · Rigour</span></div>
+  <h2>What it costs to run</h2>
+  <div class="stat-row" style="gap:44px">
+    <div class="stat"><div class="v ok">£0</div><div class="k">per month, entirely within always-free tiers</div></div>
+    <div class="stat"><div class="v">148 MB</div><div class="k">total storage against a 10 GB free allowance</div></div>
+    <div class="stat"><div class="v trap">£250–400</div><div class="k">what Cloud Composer would have added</div></div>
+  </div>
+  <p style="margin-top:20px">BigQuery, Cloud Run, Workflows, Scheduler, Pub/Sub, Cloud Build and
+  Artifact Registry all sit inside monthly free allowances at this volume. The constraint drove
+  a better design: because Composer was unaffordable, the pipeline became event-driven instead
+  of polling on a timer.</p>
+  <div class="shot">
+    <div class="lab">Screenshot 7 · Billing</div>
+    <p class="what">Billing report or budget page showing current spend against the £25 budget.</p>
+    <div class="where">console.cloud.google.com/billing</div>
+  </div>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>Frame the constraint as a design input rather than a limitation. A quarterly-updating source doesn't need a always-on scheduler cluster, and noticing that is engineering judgement.</p></details>
+
+<!-- 13 -->
+<section class="slide" id="s13">
+  <div class="snum"><span>13</span><span class="act-tag">Act IV · Compliance</span></div>
+  <h2>Compliance as code, not as a document</h2>
+  <p class="lede">Eight control families, checked against live cloud state, exiting non-zero
+  on failure so it can gate a release.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Control</th><th>What is verified</th><th></th></tr></thead>
+      <tbody>
+        <tr><td>Residency</td><td>every bucket and dataset in <code>europe-west2</code></td><td><span class="chip ok">pass</span></td></tr>
+        <tr><td>Public exposure</td><td>access prevention enforced on all buckets</td><td><span class="chip ok">pass</span></td></tr>
+        <tr><td>Credentials</td><td>zero downloadable service-account keys</td><td><span class="chip ok">pass</span></td></tr>
+        <tr><td>Least privilege</td><td>no service account holds owner or editor</td><td><span class="chip ok">pass</span></td></tr>
+        <tr><td>Retention</td><td>lifecycle policies present</td><td><span class="chip ok">pass</span></td></tr>
+        <tr><td>No personal data</td><td>no identifier-shaped column in gold</td><td><span class="chip ok">pass</span></td></tr>
+        <tr><td>Disclosure control</td><td>no suppressed figure carries a value</td><td><span class="chip ok">pass</span></td></tr>
+        <tr><td>Audit trail</td><td>raw immutable, version lineage retained</td><td><span class="chip ok">pass</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:14px">The UK GDPR position is the interesting one. Rather than asserting
+  "no personal data", the check <strong>fails the build</strong> if any identifier-shaped column
+  ever appears. A schema change that introduced personal data would break the pipeline instead
+  of quietly widening scope.</p>
+  <div class="shot">
+    <div class="lab">Screenshot 8 · Terminal</div>
+    <p class="what">Full output of the verification script ending in <code>18 passed, 0 failed</code>.</p>
+    <div class="where">./scripts/verify_compliance.sh</div>
+  </div>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>Also worth stating what's deliberately excluded and why: no CMEK, no VPC Service Controls, no Assured Workloads. Those are OFFICIAL-SENSITIVE controls; this data is published openly on gov.uk. An unjustified control is as much a smell as a missing one.</p></details>
+
+<!-- 14 -->
+<section class="slide" id="s14">
+  <div class="snum"><span>14</span><span class="act-tag">Act IV · Compliance</span></div>
+  <h2>Two things the checks found</h2>
+  <p class="lede">Both were real, both were invisible to a written policy, both are fixed.</p>
+  <div class="two" style="margin-top:16px">
+    <div>
+      <p><span class="chip bad">Finding 1</span> <strong>Data was leaving the UK.</strong>
+      <code>gcloud builds submit</code> silently creates a staging bucket <em>in the US</em>.
+      Nine source archives — including a dbt seed — had staged there, contradicting the
+      residency posture of every other resource.</p>
+      <p>Fixed with an in-region staging bucket pinned in the deploy script. The US bucket
+      is deleted; the check now fails if any bucket sits outside the region.</p>
+    </div>
+    <div>
+      <p><span class="chip bad">Finding 2</span> <strong>An over-privileged default identity.</strong>
+      Google grants the default compute service account project-wide
+      <code>roles/editor</code> at project creation — and Cloud Build was using it.</p>
+      <p>The naive fix breaks the build. The correct one is a dedicated build identity holding
+      only registry write, source read and log write. Verified by running the pipeline
+      afterwards — which is exactly how the idempotency bug on slide 11 surfaced.</p>
+    </div>
+  </div>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>Finding 2 is the better story: the obvious remediation would have broken the pipeline. Naming why the easy fix is wrong demonstrates more than reporting a clean pass would.</p></details>
+
+<!-- 15 -->
+<section class="slide" id="s15">
+  <div class="snum"><span>15</span><span class="act-tag">Act V · What the data says</span></div>
+  <h2>The market didn't shrink. It moved upmarket.</h2>
+  <p class="lede">Volumes are broadly flat across eight years. The composition inverted.</p>
+  <div class="tbl-wrap" style="margin-top:6px">
+  <svg viewBox="0 0 880 280" role="img" aria-label="Line chart: intermediate apprenticeship share falls from 43 percent to 17 percent while higher rises from 13 percent to 41 percent, crossing around 2020-21; advanced stays flat near 43 percent">
+    <g font-family="IBM Plex Mono, monospace" font-size="11">
+      <g stroke="var(--rule-2)" stroke-width="1">
+        <line x1="60" y1="30" x2="850" y2="30"/><line x1="60" y1="88" x2="850" y2="88"/>
+        <line x1="60" y1="146" x2="850" y2="146"/><line x1="60" y1="204" x2="850" y2="204"/>
+      </g>
+      <g fill="var(--muted)" text-anchor="end">
+        <text x="50" y="34">50%</text><text x="50" y="92">33%</text>
+        <text x="50" y="150">17%</text><text x="50" y="208">0%</text>
+      </g>
+      <g fill="var(--muted)" text-anchor="middle">
+        <text x="60"  y="228">17/18</text><text x="258" y="228">19/20</text>
+        <text x="456" y="228">21/22</text><text x="654" y="228">23/24</text>
+        <text x="850" y="228">25/26</text>
+      </g>
+      <polyline fill="none" stroke="var(--trap)" stroke-width="2.2"
+        points="60,55 159,80 258,100 357,116 456,116 555,128 654,132 752,140 850,144"/>
+      <polyline fill="none" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="4 3"
+        points="60,52 159,51 258,53 357,55 456,54 555,52 654,55 752,60 850,59"/>
+      <polyline fill="none" stroke="var(--correct)" stroke-width="2.2"
+        points="60,160 159,138 258,116 357,99 456,100 555,90 654,82 752,69 850,66"/>
+      <g stroke-width="2" fill="var(--panel)">
+        <circle cx="850" cy="144" r="4.5" stroke="var(--trap)"/>
+        <circle cx="850" cy="66"  r="4.5" stroke="var(--correct)"/>
+        <circle cx="60"  cy="55"  r="4.5" stroke="var(--trap)"/>
+        <circle cx="60"  cy="160" r="4.5" stroke="var(--correct)"/>
+      </g>
+      <g font-size="11.5" font-weight="500">
+        <text x="72" y="46"  fill="var(--trap)">Intermediate 43.0%</text>
+        <text x="72" y="176" fill="var(--correct)">Higher 12.8%</text>
+        <text x="838" y="138" fill="var(--trap)" text-anchor="end">17.3%</text>
+        <text x="838" y="58"  fill="var(--correct)" text-anchor="end">41.0%</text>
+        <text x="470" y="44"  fill="var(--muted)">Advanced — flat throughout</text>
+      </g>
+    </g>
+  </svg>
+  </div>
+  <p class="cap">Share of starts by level, England. 2025/26 is provisional (three quarters).</p>
+  <p style="margin-top:10px">Intermediate <strong>43.0% → 17.3%</strong>. Higher
+  <strong>12.8% → 41.0%</strong>. Advanced barely moved — which is what makes this clean:
+  it is not a general drift, it is Intermediate giving way directly to Higher.</p>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>The commercial reading: a provider watching only headline volumes concludes the market is flat and stable. It isn't. Demand didn't fall, it changed level — and provision built for Intermediate delivery is chasing a segment that has lost three-fifths of its share.</p></details>
+
+<!-- 16 -->
+<section class="slide" id="s16">
+  <div class="snum"><span>16</span><span class="act-tag">Act V · What the data says</span></div>
+  <h2>National in direction, uneven in degree</h2>
+  <p class="lede">Change in level share, 2017/18 to 2024/25.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Region</th><th>Higher (pts)</th><th>Intermediate (pts)</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td>London</td><td class="num">+33.8</td><td class="num">−23.7</td></tr>
+        <tr><td>South East</td><td class="num">+27.5</td><td class="num">−24.6</td></tr>
+        <tr><td>East of England</td><td class="num">+27.3</td><td class="num">−23.5</td></tr>
+        <tr><td>West Midlands</td><td class="num">+27.2</td><td class="num">−25.7</td></tr>
+        <tr><td>East Midlands</td><td class="num">+26.9</td><td class="num">−26.2</td></tr>
+        <tr><td>South West</td><td class="num">+25.6</td><td class="num">−21.0</td></tr>
+        <tr><td>North West</td><td class="num">+25.0</td><td class="num">−22.4</td></tr>
+        <tr><td>Yorkshire and The Humber</td><td class="num">+23.5</td><td class="num">−25.0</td></tr>
+        <tr class="bad"><td>North East</td><td class="num">+21.8</td><td class="num">−26.2</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:14px">Every region moved the same way, so this is structural rather than local.
+  But the spread is <strong>12 percentage points</strong>. Note the North East shed
+  <em>more</em> Intermediate than London while gaining the <em>least</em> Higher — the segment
+  left, and less of it returned at a higher level.</p>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>If asked what to do with this: it's a targeting argument. The North East has the largest gap between what left and what replaced it, which is either a risk or an opportunity depending on where the provider already operates.</p></details>
+
+<!-- 17 -->
+<section class="slide" id="s17">
+  <div class="snum"><span>17</span><span class="act-tag">Act V · What the data says</span></div>
+  <h2>Three structurally distinct markets</h2>
+  <p class="lede">Unsupervised segmentation on level mix — BigQuery ML k-means, features expressed
+  as shares so that volume doesn't dominate.</p>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Cluster</th><th>Members</th><th>Character</th></tr></thead>
+      <tbody>
+        <tr class="hl"><td class="num">2</td><td>London alone</td><td>Highest Higher (37.3%), lowest Intermediate (20.9%)</td></tr>
+        <tr><td class="num">1</td><td>East of England alone</td><td>Mid-high Higher share</td></tr>
+        <tr><td class="num">3</td><td>The other seven regions</td><td>Intermediate-weighted</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:14px">London separates on its own without being told to. That's a
+  cross-check rather than a new finding — the algorithm recovers unsupervised what slide 16
+  shows directly, which is the useful way to use clustering on a dataset this size.</p>
+  <div class="shot">
+    <div class="lab">Screenshot 9 · BigQuery ML</div>
+    <p class="what">Cluster assignments from <code>gold.region_segments</code>, or the model's
+    evaluation tab in the BigQuery console.</p>
+    <div class="where">sql/ai/01_region_clustering.sql</div>
+  </div>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>Be honest that with nine regions and three features, k-means is a confirmation tool rather than a discovery engine. Claiming more would be overselling it — and the cross-check framing is more credible anyway.</p></details>
+
+<!-- 18 -->
+<section class="slide" id="s18">
+  <div class="snum"><span>18</span><span class="act-tag">Act V · What the data says</span></div>
+  <h2>What this data cannot tell you</h2>
+  <p class="lede">Naming the limits is part of the analysis.</p>
+  <ul class="tight">
+    <li><strong>Not completion rates.</strong> Dividing same-year achievements by same-year starts
+    looks like a completion rate and isn't — apprenticeships run one to four years, and there is
+    no cohort linkage between a start and the achievement it eventually produces. The 2017/18
+    figure of 0.735 is a large pre-reform cohort completing against a shrunken post-reform intake.
+    That's a fifth trap, and the honest response is to not compute the ratio.</li>
+    <li><strong>No individual provider detail</strong> — provider <em>type</em> only, so no benchmarking.</li>
+    <li><strong>No sector or subject split</strong> — this extract carries level, age, funding and provider type.</li>
+    <li><strong>No sub-regional geography</strong> — region is the finest grain available.</li>
+    <li><strong>2025/26 is provisional</strong> — three quarters, excluded from every trend conclusion
+    and flagged as such throughout the warehouse.</li>
+  </ul>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>This slide does more for credibility than any chart. Anyone who knows this data will be waiting to see whether completion rates were computed naively — saying explicitly that they can't be is the answer they're listening for.</p></details>
+
+<!-- 19 -->
+<section class="slide" id="s19">
+  <div class="snum"><span>19</span><span class="act-tag">Close</span></div>
+  <h2>What I'd do differently</h2>
+  <ul class="tight">
+    <li><strong>Confirm the suppression codes against the published methodology first.</strong>
+    Their meanings were inferred from the data's own behaviour. That inference drives a whole
+    dimension table, and it should have been checked against the source documentation on day one.</li>
+    <li><strong>Add CI.</strong> The tests and compliance checks run on demand; they should run on
+    every push. That's an afternoon's work and it's the obvious gap.</li>
+    <li><strong>Revisit dbt versus Dataform.</strong> dbt was chosen for portability and because it
+    is the industry standard. Dataform is native, free, and would have removed a container image.</li>
+    <li><strong>Ask for the raw ILR.</strong> Almost every limitation on the previous slide dissolves
+    with learner-level data — at the cost of a genuine UK GDPR scope, which this project deliberately
+    does not have.</li>
+  </ul>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>Have this slide ready but be willing to skip it for time. If asked "what would you improve", this is the answer — offering it unprompted signals the self-assessment was done.</p></details>
+
+<!-- 20 -->
+<section class="slide" id="s20">
+  <div class="snum"><span>20</span><span class="act-tag">Close</span></div>
+  <h1>One pipeline, four traps, no monthly bill</h1>
+  <div class="stat-row" style="margin-top:26px; gap:40px">
+    <div class="stat"><div class="v ok">33</div><div class="k">resources, all from Terraform</div></div>
+    <div class="stat"><div class="v ok">26</div><div class="k">tests gating every publish</div></div>
+    <div class="stat"><div class="v ok">18</div><div class="k">compliance checks against live state</div></div>
+    <div class="stat"><div class="v ok">6</div><div class="k">source versions reconciled exactly</div></div>
+    <div class="stat"><div class="v ok">£0</div><div class="k">per month</div></div>
+  </div>
+  <div class="spacer"></div>
+  <hr class="rule">
+  <p style="font-size:13px; color:var(--muted); max-width:78ch">Contains public sector information
+  licensed under the Open Government Licence v3.0. Source: Department for Education,
+  <em>Explore Education Statistics</em> — “Headline Full year: Starts, Achievements, Participation
+  by Level, Levy, Age, Region, Provider type”, dataset version 2.0.2, published 16 July 2026.</p>
+</section>
+<details class="notes"><summary>Speaker notes</summary>
+<p>Close on the traps, not the tooling. Anyone can wire GCP services together; the value was noticing the data was lying four different ways and building something that doesn't repeat the lie.</p></details>
+
+</main>
+</div>
